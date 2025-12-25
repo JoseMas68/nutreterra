@@ -236,71 +236,68 @@ const productLines = (await getProductLines()).filter(line => line.active);
       </div>
 
       <!-- Grid de Líneas -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {productLines.map((line, index) => {
           const gradients = [
-            'from-primary/10 to-primary/5',
-            'from-leaf/10 to-leaf/5',
-            'from-accent/10 to-accent/5',
+            'from-orange-100 to-amber-50 hover:from-orange-200 hover:to-amber-100',
+            'from-green-100 to-emerald-50 hover:from-green-200 hover:to-emerald-100',
+            'from-blue-100 to-cyan-50 hover:from-blue-200 hover:to-cyan-100',
+            'from-purple-100 to-fuchsia-50 hover:from-purple-200 hover:to-fuchsia-100',
           ];
           const borderColors = [
-            'group-hover:border-primary/30',
-            'group-hover:border-leaf/30',
-            'group-hover:border-accent/30',
+            'border-orange-200 group-hover:border-orange-400',
+            'border-green-200 group-hover:border-green-400',
+            'border-blue-200 group-hover:border-blue-400',
+            'border-purple-200 group-hover:border-purple-400',
           ];
           const textColors = [
-            'group-hover:text-primary',
-            'group-hover:text-leaf',
-            'group-hover:text-accent',
+            'text-orange-800 group-hover:text-orange-900',
+            'text-green-800 group-hover:text-green-900',
+            'text-blue-800 group-hover:text-blue-900',
+            'text-purple-800 group-hover:text-purple-900',
+          ];
+          const iconColors = [
+            'text-orange-600',
+            'text-green-600',
+            'text-blue-600',
+            'text-purple-600',
           ];
 
           return (
             <a
               href={`/linea/${line.slug}`}
-              class={`group relative bg-gradient-to-br ${gradients[index % 3]} rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-transparent ${borderColors[index % 3]} transform hover:-translate-y-2`}
+              class={`group relative bg-gradient-to-br ${gradients[index % 4]} rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 ${borderColors[index % 4]} transform hover:-translate-y-2 flex flex-col h-full`}
             >
-              <div class="p-8 relative z-10">
-                <!-- Icono -->
-                <div
-                  class="w-20 h-20 mb-6 text-gray-700 group-hover:scale-125 group-hover:rotate-6 transition-all duration-500"
-                  set:html={line.icon}
-                />
+              <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/40 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+              
+              <div class="p-8 relative z-10 flex flex-col flex-grow">
+                <div class="flex items-start justify-between mb-6">
+                  <div
+                    class={`w-16 h-16 ${iconColors[index % 4]} group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 bg-white/60 rounded-2xl p-3 shadow-sm backdrop-blur-sm`}
+                    set:html={line.icon}
+                  />
+                  {line.productCount && line.productCount > 0 && (
+                    <span class="bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-600 shadow-sm border border-white/50">
+                      {line.productCount} productos
+                    </span>
+                  )}
+                </div>
 
-                <!-- Nombre -->
-                <h3 class={`text-2xl font-bold text-gray-900 mb-3 ${textColors[index % 3]} transition-colors duration-300`}>
+                <h3 class={`text-3xl font-black mb-3 ${textColors[index % 4]} transition-colors duration-300 tracking-tight`}>
                   {line.name}
                 </h3>
 
-                <!-- Descripción -->
-                <p class="text-gray-600 mb-6 leading-relaxed min-h-[80px]">
+                <p class="text-gray-700 mb-8 leading-relaxed text-lg font-medium opacity-90 flex-grow">
                   {line.description}
                 </p>
 
-                <!-- Footer con contador y link -->
-                <div class="flex items-center justify-between pt-4 border-t border-gray-200/50">
-                  {line.productCount && line.productCount > 0 && (
-                    <div class="flex items-center gap-2 text-sm text-gray-500">
-                      <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                      </div>
-                      <span class="font-semibold">{line.productCount} productos</span>
-                    </div>
-                  )}
-
-                  <!-- Arrow -->
-                  <div class="flex items-center gap-2 text-gray-700 font-semibold group-hover:gap-4 transition-all duration-300">
-                    <span class="text-sm">Explorar</span>
-                    <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-                  </div>
+                <div class="flex items-center gap-2 font-bold text-gray-800 group-hover:gap-4 transition-all duration-300 mt-auto">
+                  <span>Descubrir Línea</span>
+                  <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                  </svg>
                 </div>
               </div>
-
-              <!-- Decorative circle -->
-              <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
             </a>
           );
         })}
@@ -321,7 +318,7 @@ const productLines = (await getProductLines()).filter(line => line.active);
       </div>
 
       <!-- Grid de Categorías -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-5xl mx-auto">
         {categories.map((category) => (
           <CategoryCard category={category} />
         ))}

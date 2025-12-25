@@ -1,94 +1,18 @@
-import { useState, useEffect } from 'react';
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  imageUrl: string;
-  price: number;
-  stock: number;
-  calories: number | null;
-  protein: number | null;
-  carbohydrates: number | null;
-  fat: number | null;
-}
-
-interface CartItem {
-  productId: string;
-  quantity: number;
-  product?: Product;
-}
+import { useStore } from '@nanostores/react';
+import { cartItems, removeCartItem, updateCartItemQuantity, clearCart } from '../stores/cartStore';
 
 export default function CartManager({ apiUrl }: { apiUrl: string }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadCart();
-  }, []);
-
-  const loadCart = async () => {
-    setLoading(true);
-    try {
-      // Cargar items pendientes de localStorage (desde el planificador)
-      const pendingItems = localStorage.getItem('pendingCartItems');
-      if (pendingItems) {
-        const items: CartItem[] = JSON.parse(pendingItems);
-
-        // Cargar información de productos
-        const itemsWithProducts = await Promise.all(
-          items.map(async (item) => {
-            try {
-              const response = await fetch(`${apiUrl}/api/products`);
-              const products: Product[] = await response.json();
-              const product = products.find(p => p.id === item.productId);
-              return { ...item, product };
-            } catch (error) {
-              console.error('Error loading product:', error);
-              return item;
-            }
-          })
-        );
-
-        setCartItems(itemsWithProducts.filter(item => item.product));
-        localStorage.removeItem('pendingCartItems');
-      }
-    } catch (error) {
-      console.error('Error loading cart:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateQuantity = (productId: string, newQuantity: number) => {
-    if (newQuantity < 1) {
-      removeItem(productId);
-      return;
-    }
-
-    setCartItems(prev =>
-      prev.map(item =>
-        item.productId === productId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const removeItem = (productId: string) => {
-    setCartItems(prev => prev.filter(item => item.productId !== productId));
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
-  };
+  const $cartItems = useStore(cartItems);
+  const items = Object.values($cartItems);
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => {
+    return items.reduce((total, item) => {
       return total + (item.product?.price || 0) * item.quantity;
     }, 0);
   };
 
   const calculateTotalMacros = () => {
-    return cartItems.reduce(
+    return items.reduce(
       (totals, item) => {
         const product = item.product;
         if (!product) return totals;
@@ -104,182 +28,161 @@ export default function CartManager({ apiUrl }: { apiUrl: string }) {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          <p className="mt-4 text-gray-600">Cargando carrito...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-16">
-          <svg className="mx-auto h-24 w-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          <h2 className="mt-4 text-2xl font-bold text-gray-900">Tu carrito está vacío</h2>
-          <p className="mt-2 text-gray-600">Añade productos desde el planificador o el catálogo</p>
-          <div className="mt-6 flex gap-4 justify-center">
-            <a
-              href="/planificador"
-              className="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-leaf transition-colors"
-            >
-              Ir al Planificador
-            </a>
-            <a
-              href="/productos"
-              className="px-6 py-3 bg-white text-primary border-2 border-primary font-semibold rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Ver Productos
-            </a>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const total = calculateTotal();
   const totalMacros = calculateTotalMacros();
 
+  if (items.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto">
+          <svg
+            className="w-24 h-24 text-gray-300 mx-auto mb-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+            />
+          </svg>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Tu carrito está vacío</h2>
+          <p className="text-gray-600 mb-8">
+            ¡Empieza a añadir deliciosos platos saludables!
+          </p>
+          <a
+            href="/productos"
+            className="inline-block bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-leaf transition-colors"
+          >
+            Ver Productos
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-gray-900 mb-8">Carrito de Compra</h1>
+    <div className="container mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Tu Carrito</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Lista de productos */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Productos ({cartItems.length})</h2>
-              <button
-                onClick={clearCart}
-                className="text-red-600 hover:text-red-700 font-medium text-sm"
-              >
-                Vaciar Carrito
-              </button>
-            </div>
+        {/* Lista de Items */}
+        <div className="lg:col-span-2 space-y-4">
+          {items.map((item) => (
+            <div
+              key={item.productId}
+              className="bg-white rounded-xl shadow-md p-4 flex items-center gap-4"
+            >
+              <img
+                src={item.product?.imageUrl}
+                alt={item.product?.name}
+                className="w-24 h-24 rounded-lg object-cover"
+              />
+              
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-lg text-gray-900 mb-1">
+                  {item.product?.name}
+                </h3>
+                <p className="text-primary font-bold text-lg">
+                  {item.product?.price.toFixed(2)}€
+                </p>
+                {item.product?.calories && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    {item.product.calories} kcal / unidad
+                  </p>
+                )}
+              </div>
 
-            <div className="space-y-4">
-              {cartItems.map((item) => {
-                if (!item.product) return null;
-
-                return (
-                  <div key={item.productId} className="flex gap-4 p-4 border border-gray-200 rounded-lg">
-                    <img
-                      src={item.product.imageUrl}
-                      alt={item.product.name}
-                      className="w-24 h-24 object-cover rounded-lg"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{item.product.name}</h3>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {item.product.calories && `${item.product.calories} kcal`}
-                        {item.product.protein && ` • ${item.product.protein}g proteína`}
-                      </p>
-                      <div className="flex items-center gap-4 mt-3">
-                        <div className="flex items-center border border-gray-300 rounded-lg">
-                          <button
-                            onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                            className="px-3 py-1 hover:bg-gray-100 transition-colors"
-                          >
-                            −
-                          </button>
-                          <span className="px-4 py-1 border-x border-gray-300">{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                            className="px-3 py-1 hover:bg-gray-100 transition-colors"
-                            disabled={item.quantity >= item.product.stock}
-                          >
-                            +
-                          </button>
-                        </div>
-                        <button
-                          onClick={() => removeItem(item.productId)}
-                          className="text-red-600 hover:text-red-700 text-sm font-medium"
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xl font-bold text-primary">
-                        {(item.product.price * item.quantity).toFixed(2)}€
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {item.product.price.toFixed(2)}€ / ud.
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center border border-gray-300 rounded-lg">
+                  <button
+                    onClick={() => updateCartItemQuantity(item.productId, item.quantity - 1)}
+                    className="px-3 py-1 hover:bg-gray-100 text-gray-600 transition-colors"
+                  >
+                    -
+                  </button>
+                  <span className="px-2 font-medium text-gray-900 w-8 text-center">
+                    {item.quantity}
+                  </span>
+                  <button
+                    onClick={() => updateCartItemQuantity(item.productId, item.quantity + 1)}
+                    className="px-3 py-1 hover:bg-gray-100 text-gray-600 transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
+                
+                <button
+                  onClick={() => removeCartItem(item.productId)}
+                  className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                  title="Eliminar"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
 
         {/* Resumen */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Resumen del Pedido</h2>
-
-            {/* Macros totales */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-leaf/10 rounded-lg">
-              <h3 className="font-semibold text-sm text-gray-700 mb-3">Totales Nutricionales</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <div className="font-bold text-primary">{totalMacros.calories.toFixed(0)}</div>
-                  <div className="text-gray-600 text-xs">kcal</div>
-                </div>
-                <div>
-                  <div className="font-bold text-blue-600">{totalMacros.protein.toFixed(1)}g</div>
-                  <div className="text-gray-600 text-xs">Proteínas</div>
-                </div>
-                <div>
-                  <div className="font-bold text-orange-600">{totalMacros.carbohydrates.toFixed(1)}g</div>
-                  <div className="text-gray-600 text-xs">Carbohidratos</div>
-                </div>
-                <div>
-                  <div className="font-bold text-yellow-600">{totalMacros.fat.toFixed(1)}g</div>
-                  <div className="text-gray-600 text-xs">Grasas</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Desglose de precio */}
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Resumen del Pedido</h2>
+            
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
-                <span>{total.toFixed(2)}€</span>
+                <span>{calculateTotal().toFixed(2)}€</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Envío</span>
-                <span className="text-green-600 font-medium">GRATIS</span>
+                <span className="text-green-600 font-medium">Gratis</span>
               </div>
-              <div className="border-t border-gray-200 pt-3">
-                <div className="flex justify-between text-xl font-bold">
-                  <span>Total</span>
-                  <span className="text-primary">{total.toFixed(2)}€</span>
+              <div className="border-t border-gray-200 pt-3 flex justify-between text-lg font-bold text-gray-900">
+                <span>Total</span>
+                <span>{calculateTotal().toFixed(2)}€</span>
+              </div>
+            </div>
+
+            {/* Resumen Nutricional */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <h3 className="font-semibold text-gray-900 mb-3 text-sm">Información Nutricional Total</h3>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-gray-500 block">Calorías</span>
+                  <span className="font-medium">{Math.round(totalMacros.calories)}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Proteínas</span>
+                  <span className="font-medium">{Math.round(totalMacros.protein)}g</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Carbos</span>
+                  <span className="font-medium">{Math.round(totalMacros.carbohydrates)}g</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Grasas</span>
+                  <span className="font-medium">{Math.round(totalMacros.fat)}g</span>
                 </div>
               </div>
             </div>
 
-            <a
-              href="/checkout"
-              className="block w-full px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-leaf transition-colors text-center"
+            <button
+              onClick={() => alert('Checkout próximamente!')}
+              className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-leaf transition-colors shadow-md hover:shadow-lg"
             >
-              Proceder al Pago
-            </a>
-
-            <a
-              href="/productos"
-              className="block w-full mt-3 px-6 py-3 bg-white text-primary border-2 border-primary font-semibold rounded-lg hover:bg-gray-50 transition-colors text-center"
+              Tramitar Pedido
+            </button>
+            
+            <button
+              onClick={clearCart}
+              className="w-full mt-3 text-gray-500 text-sm hover:text-red-500 transition-colors"
             >
-              Seguir Comprando
-            </a>
+              Vaciar carrito
+            </button>
           </div>
         </div>
       </div>

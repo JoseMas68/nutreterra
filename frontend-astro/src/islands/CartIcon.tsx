@@ -1,17 +1,14 @@
 // Island interactivo: Icono de carrito con contador
-import { useState } from 'react';
+import { useStore } from '@nanostores/react';
+import { cartItems } from '../stores/cartStore';
 
 export default function CartIcon() {
-  // Por ahora un valor hardcoded, luego conectar con estado global
-  const [cartCount] = useState(3);
-
-  const handleClick = () => {
-    alert('Funcionalidad de carrito en desarrollo. Próximamente disponible!');
-  };
+  const $cartItems = useStore(cartItems);
+  const cartCount = Object.values($cartItems).reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <button
-      onClick={handleClick}
+    <a
+      href="/carrito"
       className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
       aria-label="Carrito de compras"
     >
@@ -37,6 +34,6 @@ export default function CartIcon() {
           {cartCount}
         </span>
       )}
-    </button>
+    </a>
   );
 }
