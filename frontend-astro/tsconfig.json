@@ -1,7 +1,4 @@
 {
-  // Configuración de TypeScript para Astro
-  // NOTA: Configurar path aliases (@/) durante la implementación
-
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "baseUrl": ".",
