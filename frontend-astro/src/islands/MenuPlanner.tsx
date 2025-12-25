@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import {
   DndContext,
   DragOverlay,
@@ -7,8 +8,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragStartEvent,
-  DragEndEvent,
 } from '@dnd-kit/core';
 import {
   arrayMove,
