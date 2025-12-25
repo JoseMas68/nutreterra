@@ -1,0 +1,8 @@
+# Layouts
+
+Plantillas base de la aplicación.
+
+Layouts a implementar:
+- Layout.astro - Layout principal (header, footer, meta tags)
+- ProductLayout.astro - Layout específico para páginas de producto
+- CheckoutLayout.astro - Layout para proceso de checkout

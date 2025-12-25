@@ -1,0 +1,12 @@
+# Imágenes de Blog
+
+Nomenclatura: {article-slug}.webp
+
+Ejemplos:
+- beneficios-avena-integral.webp
+- recetas-con-legumbres.webp
+
+Especificaciones:
+- Formato: WebP
+- Aspect ratio: 16:9
+- Tamaño: 1200x675px

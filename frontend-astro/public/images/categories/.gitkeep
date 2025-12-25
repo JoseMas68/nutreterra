@@ -1,0 +1,13 @@
+# Imágenes de Categorías
+
+Nomenclatura: {slug}.webp
+
+Ejemplos:
+- cereales.webp
+- legumbres.webp
+- frutos-secos.webp
+
+Especificaciones:
+- Formato: WebP
+- Aspect ratio: 16:9
+- Tamaños: 800x450px (card), 1920x1080px (hero)

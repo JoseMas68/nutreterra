@@ -1,0 +1,19 @@
+# robots.txt para NutreTerra
+
+# Permitir acceso a todos los crawlers
+User-agent: *
+Allow: /
+
+# Bloquear acceso a rutas privadas o en desarrollo
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_astro/
+
+# Crawl-delay para bots pesados (opcional)
+# User-agent: *
+# Crawl-delay: 10
+
+# Sitemap
+Sitemap: https://nutreterra.com/sitemap.xml
+
+# NOTA: Actualizar URL del sitemap cuando esté en producción

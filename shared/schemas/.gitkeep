@@ -1,0 +1,13 @@
+# Schemas
+
+Schemas de validación Zod compartidos.
+
+Archivos a implementar:
+- product.ts - Validación de productos (create, update, query)
+- auth.ts - Validación de autenticación (register, login)
+- cart.ts - Validación de carrito (add, update)
+- order.ts - Validación de pedidos y direcciones
+- index.ts - Exportación de todos los schemas
+
+Los schemas se usan tanto en frontend (validación de formularios)
+como en backend (validación de API requests).

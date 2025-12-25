@@ -1,0 +1,11 @@
+# Services
+
+Funciones para consumir la API del backend.
+
+Services a implementar:
+- api-client.ts - Cliente HTTP base
+- products.ts - Endpoints de productos
+- categories.ts - Endpoints de categorías
+- cart.ts - Endpoints de carrito
+- orders.ts - Endpoints de pedidos
+- auth.ts - Endpoints de autenticación

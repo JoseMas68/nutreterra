@@ -1,0 +1,15 @@
+# Pages
+
+Páginas de la aplicación (rutas).
+
+Páginas a implementar:
+- index.astro - Página principal
+- producto/[slug].astro - Detalle de producto
+- categoria/[slug].astro - Listado de productos por categoría
+- carrito.astro - Carrito de compras
+- checkout/ - Proceso de checkout (index, pago, confirmacion)
+- login.astro - Autenticación
+- registro.astro - Registro de usuarios
+- perfil.astro - Perfil de usuario
+- pedidos/ - Historial de pedidos
+- contacto.astro - Página de contacto

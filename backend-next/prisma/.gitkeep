@@ -1,0 +1,14 @@
+# Prisma
+
+Archivos de Prisma ORM.
+
+Archivos a implementar:
+- schema.prisma - Modelo de datos completo
+- seed.ts - Datos iniciales (categorías, productos, admin user)
+- migrations/ - Migraciones de base de datos (generadas automáticamente)
+
+Comandos útiles:
+- npx prisma migrate dev - Crear migración
+- npx prisma generate - Generar cliente
+- npx prisma studio - Ver datos en navegador
+- npx prisma db seed - Poblar base de datos

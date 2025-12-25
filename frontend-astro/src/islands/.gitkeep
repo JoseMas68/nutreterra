@@ -1,0 +1,11 @@
+# Islands
+
+Componentes interactivos con React/Preact (hidratados en cliente).
+
+Islands a implementar:
+- CartIcon.tsx - Icono de carrito con contador
+- AddToCart.tsx - Botón añadir al carrito
+- ProductFilters.tsx - Filtros de productos
+- CartSummary.tsx - Resumen del carrito
+- CheckoutForm.tsx - Formulario de checkout
+- PaymentForm.tsx - Formulario de pago (Stripe)

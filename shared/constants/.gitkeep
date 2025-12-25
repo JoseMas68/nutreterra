@@ -1,0 +1,13 @@
+# Constants
+
+Constantes globales compartidas.
+
+Archivos a implementar:
+- shipping.ts - Constantes de envío (métodos, costos, umbral envío gratis)
+- order-status.ts - Labels de estados de pedidos y pagos
+- index.ts - Exportación de todas las constantes
+
+Ejemplos:
+- FREE_SHIPPING_THRESHOLD = 50
+- SHIPPING_METHODS = { STANDARD, EXPRESS }
+- MAX_CART_ITEMS = 99

@@ -1,0 +1,12 @@
+# Components
+
+Componentes reutilizables sin interactividad (renderizados en servidor).
+
+Componentes a implementar:
+- Header.astro - Navegación principal
+- Footer.astro - Pie de página
+- ProductCard.astro - Tarjeta de producto
+- CategoryCard.astro - Tarjeta de categoría
+- Breadcrumbs.astro - Migas de pan
+- Hero.astro - Sección hero de la home
+- SEO.astro - Meta tags dinámicos

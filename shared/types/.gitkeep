@@ -1,0 +1,11 @@
+# Types
+
+Tipos TypeScript compartidos entre frontend y backend.
+
+Archivos a implementar:
+- product.ts - Tipos de productos
+- category.ts - Tipos de categorías
+- cart.ts - Tipos de carrito
+- order.ts - Tipos de pedidos
+- user.ts - Tipos de usuarios
+- index.ts - Exportación de todos los tipos

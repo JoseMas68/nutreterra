@@ -1,0 +1,14 @@
+# Imágenes de Productos
+
+Nomenclatura: {sku}-{variante}.webp
+
+Ejemplos:
+- AV001-main.webp
+- AV001-detail-1.webp
+- AV001-detail-2.webp
+
+Especificaciones:
+- Formato: WebP
+- Aspect ratio: 1:1 (cuadrada)
+- Tamaños: 300x300, 600x600, 1200x1200px
+- Fondo: Blanco o transparente

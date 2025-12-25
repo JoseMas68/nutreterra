@@ -1,0 +1,7 @@
+# Styles
+
+Estilos globales de la aplicación.
+
+Archivos a implementar:
+- global.css - Tailwind base + estilos globales
+- fonts.css - Fuentes personalizadas (opcional)

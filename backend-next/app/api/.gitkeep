@@ -1,0 +1,15 @@
+# API Routes
+
+Endpoints REST de la aplicación.
+
+Estructura:
+- auth/ - Autenticación (register, login, refresh)
+- products/ - CRUD de productos
+- categories/ - Categorías y productos por categoría
+- cart/ - Gestión de carrito
+- orders/ - Pedidos
+- payments/ - Integración con Stripe
+- webhooks/ - Webhooks de servicios externos (Stripe)
+
+Cada carpeta contiene archivos route.ts que exportan funciones:
+- GET, POST, PATCH, DELETE según el endpoint

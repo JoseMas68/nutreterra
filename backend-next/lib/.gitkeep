@@ -1,0 +1,13 @@
+# Library / Utilidades
+
+Código compartido y configuración.
+
+Archivos a implementar:
+- prisma.ts - Cliente Prisma singleton
+- auth.ts - Utilidades de autenticación (hash, JWT)
+- stripe.ts - Configuración de Stripe
+- validators/ - Schemas de validación Zod
+  - product.ts
+  - auth.ts
+  - cart.ts
+  - order.ts

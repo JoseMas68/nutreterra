@@ -1,0 +1,31 @@
+# Public – Assets Estáticos
+
+Esta carpeta contiene archivos estáticos servidos directamente.
+
+## Archivos Creados
+
+✅ logo.svg - Logo principal de NutreTerra (oficial)
+✅ logo-icon.svg - Logo cuadrado (oficial)
+✅ favicon.svg - Favicon del sitio (logo cuadrado)
+✅ manifest.json - PWA manifest
+✅ robots.txt - SEO crawler config
+✅ README.md - Documentación completa de assets
+
+## Estructura de Carpetas
+
+✅ images/
+   ✅ logos/ - Logos oficiales originales (respaldo)
+   ✅ products/ - Imágenes de productos
+   ✅ categories/ - Imágenes de categorías
+   ✅ blog/ - Imágenes de blog
+
+✅ icons/ - Iconos personalizados SVG
+
+## Próximos Pasos
+
+1. ✅ Logos oficiales integrados
+2. Generar favicon en múltiples formatos (.ico, .png)
+3. Añadir imágenes de productos
+4. Generar iconos PWA (192x192, 512x512)
+
+Ver README.md para especificaciones completas.

@@ -1,0 +1,10 @@
+# Server Actions
+
+Acciones del servidor personalizadas.
+
+Archivos a implementar:
+- products.ts - Acciones relacionadas con productos
+- orders.ts - Acciones relacionadas con pedidos
+
+Las server actions son funciones asíncronas que se ejecutan en el servidor
+y pueden ser llamadas directamente desde componentes.
