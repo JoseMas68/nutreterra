@@ -1,8 +1,19 @@
-// Configuración de Astro
-// Documentación: https://docs.astro.build/config
+import { defineConfig } from 'astro/config';
+import react from '@astrojs/react';
+import tailwind from '@astrojs/tailwind';
 
-// NOTA: Este archivo será configurado durante la implementación
-// Integraciones necesarias: React, Tailwind
-// Output mode: hybrid (SSG + SSR)
-
-export default {};
+// https://astro.build/config
+export default defineConfig({
+  integrations: [
+    react(),
+    tailwind({
+      // Tailwind ya está configurado en tailwind.config.js
+      applyBaseStyles: false, // Usamos nuestro global.css
+    }),
+  ],
+  output: 'static', // Generación estática (por defecto)
+  server: {
+    port: 4321,
+    host: true,
+  },
+});

@@ -564,20 +564,48 @@ main()
   });
 ```
 
-## Variables de Entorno
+## Configuración de Supabase
 
-Crear archivo `.env`:
+Este proyecto usa **Supabase** como base de datos PostgreSQL.
+
+### 1. Crear Proyecto en Supabase
+
+1. Ve a [https://supabase.com](https://supabase.com) y crea una cuenta
+2. Crea un nuevo proyecto
+3. Guarda la contraseña de la base de datos (la necesitarás para el connection string)
+
+### 2. Obtener Connection Strings
+
+En tu proyecto de Supabase:
+1. Ve a **Settings** → **Database**
+2. Busca la sección **Connection String**
+3. Selecciona **URI** y copia la URL (para `DATABASE_URL`)
+4. Selecciona **Session mode** y copia la URL (para `DIRECT_URL`)
+
+### 3. Variables de Entorno
+
+Crear archivo `.env` en la raíz de `backend-next/`:
 
 ```bash
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/nutreterra_db
+# Database (Supabase)
+# Connection pooling (para queries en producción)
+DATABASE_URL=postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
 
-# JWT
-JWT_SECRET=your_super_secret_jwt_key_change_this
+# Direct connection (para migraciones)
+DIRECT_URL=postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret_change_this_in_production
 
 # Stripe
 STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Email (Resend)
+RESEND_API_KEY=re_...
+EMAIL_FROM=noreply@nutreterra.com
 
 # Frontend URL (para CORS)
 FRONTEND_URL=http://localhost:4321
@@ -585,6 +613,8 @@ FRONTEND_URL=http://localhost:4321
 # Node environment
 NODE_ENV=development
 ```
+
+**Nota:** Reemplaza `[PROJECT-REF]`, `[PASSWORD]` y `[REGION]` con los valores de tu proyecto de Supabase.
 
 ## Instalación de Dependencias
 
@@ -636,20 +666,34 @@ npm install
 npm run prisma:generate
 ```
 
-### Crear migración
+### Crear y aplicar migraciones (Supabase)
 ```bash
+# Primera vez - crear las tablas en Supabase
 npm run prisma:migrate
+
+# Te pedirá un nombre para la migración, por ejemplo: "init"
 ```
 
-### Ver datos en navegador
+**Importante:** Asegúrate de que tu `.env` tenga correctamente configuradas las variables `DATABASE_URL` y `DIRECT_URL` de Supabase antes de ejecutar las migraciones.
+
+### Ver datos en navegador (Prisma Studio)
 ```bash
 npm run prisma:studio
 ```
 
-### Poblar base de datos
+Esto abrirá una interfaz gráfica en `http://localhost:5555` donde podrás ver y editar los datos de tu base de datos Supabase.
+
+### Poblar base de datos con datos de prueba
 ```bash
 npm run prisma:seed
 ```
+
+Esto creará:
+- 10 productos de ejemplo
+- 5 categorías
+- Tags (Vegano, Sin Gluten, Ecológico, etc.)
+- Usuario admin: `admin@nutreterra.com` / `admin123`
+- Usuario test: `test@example.com` / `test123`
 
 ## Endpoints Disponibles
 

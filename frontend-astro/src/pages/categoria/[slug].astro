@@ -1,0 +1,98 @@
+---
+// Página de categoría con listado de productos
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ProductCard from '@/components/ProductCard.astro';
+
+import { getCategories, getProducts } from '@/lib/api';
+
+export async function getStaticPaths() {
+  const categories = await getCategories();
+  return categories.map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+
+// Obtener productos de esta categoría desde la API
+const categoryProducts = await getProducts({ category: category.slug });
+
+// Obtener todas las categorías para "Otras Categorías"
+const allCategories = await getCategories();
+---
+
+<Layout title={`${category.name} - NutreTerra`} description={category.description}>
+  <Header />
+
+  <main class="py-8">
+    <div class="container mx-auto px-4">
+      <!-- Breadcrumbs -->
+      <Breadcrumbs
+        items={[
+          { name: 'Productos', href: '/categoria/cereales' },
+          { name: category.name, href: `/categoria/${category.slug}` },
+        ]}
+      />
+
+      <!-- Header de Categoría -->
+      <div class="mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          {category.name}
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl">
+          {category.description}
+        </p>
+      </div>
+
+      <!-- Contador de productos -->
+      <div class="mb-8">
+        <p class="text-gray-600">
+          Mostrando <span class="font-semibold">{categoryProducts.length}</span> productos
+        </p>
+      </div>
+
+      <!-- Grid de Productos -->
+      {categoryProducts.length > 0 ? (
+        <div class="product-grid">
+          {categoryProducts.map((product) => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16">
+          <p class="text-xl text-gray-600">
+            No hay productos disponibles en esta categoría por el momento.
+          </p>
+          <a href="/" class="btn-primary mt-6 inline-block">
+            Volver al inicio
+          </a>
+        </div>
+      )}
+
+      <!-- Otras Categorías -->
+      <section class="mt-16 pt-16 border-t border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+          Otras <span class="text-primary">Categorías</span>
+        </h2>
+        <div class="flex flex-wrap gap-4">
+          {allCategories
+            .filter(c => c.slug !== category.slug)
+            .map((otherCategory) => (
+              <a
+                href={`/categoria/${otherCategory.slug}`}
+                class="badge badge-primary text-base px-4 py-2 hover:bg-leaf transition-colors"
+              >
+                {otherCategory.name}
+              </a>
+            ))}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

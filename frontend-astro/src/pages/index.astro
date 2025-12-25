@@ -1,0 +1,121 @@
+---
+// Página principal de NutreTerra
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Hero from '@/components/Hero.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import CategoryCard from '@/components/CategoryCard.astro';
+
+import { getProducts, getCategories } from '@/lib/api';
+
+// Obtener productos destacados desde la API
+const featuredProducts = await getProducts({ featured: true, limit: 8 });
+
+// Obtener categorías desde la API
+const categories = await getCategories();
+---
+
+<Layout title="NutreTerra - Productos Naturales y Saludables">
+  <Header />
+
+  <!-- Hero Section -->
+  <Hero />
+
+  <!-- Productos Destacados -->
+  <section class="section">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Productos <span class="text-primary">Destacados</span>
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Descubre nuestra selección de productos más populares, cuidadosamente elegidos para tu bienestar.
+        </p>
+      </div>
+
+      <!-- Grid de Productos -->
+      <div class="product-grid">
+        {featuredProducts.map((product) => (
+          <ProductCard product={product} />
+        ))}
+      </div>
+
+      <!-- Ver todos -->
+      <div class="text-center mt-12">
+        <a href="/categoria/cereales" class="btn-primary btn-lg">
+          Ver Todos los Productos
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categorías -->
+  <section class="section section-cream">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Explora por <span class="text-primary">Categoría</span>
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Encuentra exactamente lo que buscas navegando por nuestras categorías.
+        </p>
+      </div>
+
+      <!-- Grid de Categorías -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {categories.map((category) => (
+          <CategoryCard category={category} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Por qué elegirnos -->
+  <section class="section">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          ¿Por qué <span class="text-primary">NutreTerra</span>?
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="text-center">
+          <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Productos Certificados</h3>
+          <p class="text-gray-600">Todos nuestros productos cuentan con certificación ecológica y de calidad.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="text-center">
+          <div class="w-16 h-16 bg-leaf/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-leaf" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Mejores Precios</h3>
+          <p class="text-gray-600">Precios competitivos sin comprometer la calidad de nuestros productos.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="text-center">
+          <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Envío Rápido</h3>
+          <p class="text-gray-600">Envío gratis en pedidos superiores a 50€. Recibe tu pedido en 24-48h.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

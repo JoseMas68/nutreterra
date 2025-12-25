@@ -1,0 +1,165 @@
+---
+// Página de detalle de producto
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import ProductGallery from '@/islands/ProductGallery';
+
+import { getProducts } from '@/lib/api';
+
+export async function getStaticPaths() {
+  const products = await getProducts();
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+
+// Productos relacionados (misma categoría) desde la API
+const allProducts = await getProducts({ category: product.category.slug });
+const relatedProducts = allProducts
+  .filter(p => p.id !== product.id)
+  .slice(0, 4);
+---
+
+<Layout title={`${product.name} - NutreTerra`} description={product.shortDescription}>
+  <Header />
+
+  <main class="py-8">
+    <div class="container mx-auto px-4">
+      <!-- Breadcrumbs -->
+      <Breadcrumbs
+        items={[
+          { name: product.category.name, href: `/categoria/${product.category.slug}` },
+          { name: product.name, href: `/producto/${product.slug}` },
+        ]}
+      />
+
+      <!-- Producto -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <!-- Galería de imágenes -->
+        <div>
+          <ProductGallery
+            client:load
+            mainImage={product.imageUrl}
+            galleryImages={product.images || []}
+            productName={product.name}
+          />
+        </div>
+
+        <!-- Información -->
+        <div>
+          <!-- Categoría -->
+          <a
+            href={`/categoria/${product.category.slug}`}
+            class="badge badge-primary inline-block mb-4"
+          >
+            {product.category.name}
+          </a>
+
+          <!-- Nombre -->
+          <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            {product.name}
+          </h1>
+
+          <!-- Precio -->
+          <div class="flex items-baseline gap-4 mb-6">
+            <span class="text-4xl font-bold text-primary">
+              {product.price.toFixed(2)}€
+            </span>
+            {product.compareAtPrice && (
+              <>
+                <span class="text-2xl text-gray-400 line-through">
+                  {product.compareAtPrice.toFixed(2)}€
+                </span>
+                <span class="badge badge-accent font-semibold">
+                  -{Math.round((1 - product.price / product.compareAtPrice) * 100)}%
+                </span>
+              </>
+            )}
+          </div>
+
+          <!-- Descripción -->
+          <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+            {product.description}
+          </p>
+
+          <!-- Tags -->
+          {product.tags && product.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2 mb-6">
+              {product.tags.map((tag) => (
+                <span class="badge badge-leaf">{tag}</span>
+              ))}
+            </div>
+          )}
+
+          <!-- Stock -->
+          <div class="mb-8">
+            {product.stock > 10 && (
+              <p class="text-leaf font-medium">✓ En stock</p>
+            )}
+            {product.stock <= 10 && product.stock > 0 && (
+              <p class="text-accent font-medium">⚠ ¡Solo quedan {product.stock} unidades!</p>
+            )}
+            {product.stock === 0 && (
+              <p class="text-red-600 font-medium">✗ Agotado</p>
+            )}
+          </div>
+
+          <!-- Acciones -->
+          <div class="flex gap-4 mb-8">
+            <button
+              class="btn-primary btn-lg flex-1"
+              onclick="alert('Funcionalidad de carrito en desarrollo')"
+              disabled={product.stock === 0}
+            >
+              {product.stock === 0 ? 'Agotado' : 'Añadir al Carrito'}
+            </button>
+          </div>
+
+          <!-- Info adicional -->
+          <div class="border-t border-gray-200 pt-6 space-y-4">
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <h4 class="font-semibold mb-1">Envío Gratis</h4>
+                <p class="text-sm text-gray-600">En pedidos superiores a 50€</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <h4 class="font-semibold mb-1">Garantía de Calidad</h4>
+                <p class="text-sm text-gray-600">Productos certificados y de origen controlado</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Productos Relacionados -->
+      {relatedProducts.length > 0 && (
+        <section>
+          <h2 class="text-3xl font-bold text-gray-900 mb-8">
+            Productos <span class="text-primary">Relacionados</span>
+          </h2>
+          <div class="product-grid">
+            {relatedProducts.map((relatedProduct) => (
+              <ProductCard product={relatedProduct} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

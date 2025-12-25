@@ -1,0 +1,78 @@
+---
+// Tarjeta de producto
+import type { Product } from '@/data/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+---
+
+<div class="card-product card-hover group">
+  <!-- Imagen -->
+  <a href={`/producto/${product.slug}`} class="block relative overflow-hidden">
+    <img
+      src={product.imageUrl}
+      alt={product.name}
+      class="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
+      loading="lazy"
+    />
+    {product.compareAtPrice && (
+      <span class="absolute top-2 right-2 badge badge-accent font-semibold">
+        -{Math.round((1 - product.price / product.compareAtPrice) * 100)}%
+      </span>
+    )}
+  </a>
+
+  <!-- Contenido -->
+  <div class="p-6">
+    <!-- Tags -->
+    {product.tags && product.tags.length > 0 && (
+      <div class="flex flex-wrap gap-2 mb-3">
+        {product.tags.slice(0, 2).map((tag) => (
+          <span class="badge badge-leaf text-xs">{typeof tag === 'string' ? tag : tag.name}</span>
+        ))}
+      </div>
+    )}
+
+    <!-- Nombre -->
+    <a href={`/producto/${product.slug}`}>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2 hover:text-primary transition-colors line-clamp-2">
+        {product.name}
+      </h3>
+    </a>
+
+    <!-- Descripción corta -->
+    <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+      {product.shortDescription}
+    </p>
+
+    <!-- Precio y acción -->
+    <div class="flex items-center justify-between">
+      <div>
+        {product.compareAtPrice && (
+          <span class="price-compare text-sm mr-2">
+            {product.compareAtPrice.toFixed(2)}€
+          </span>
+        )}
+        <span class="price">{product.price.toFixed(2)}€</span>
+      </div>
+
+      <a
+        href={`/producto/${product.slug}`}
+        class="btn-primary btn-sm"
+      >
+        Ver producto
+      </a>
+    </div>
+
+    <!-- Stock info -->
+    {product.stock < 10 && product.stock > 0 && (
+      <p class="text-xs text-accent mt-2">¡Solo quedan {product.stock} unidades!</p>
+    )}
+    {product.stock === 0 && (
+      <p class="text-xs text-red-600 mt-2">Agotado</p>
+    )}
+  </div>
+</div>

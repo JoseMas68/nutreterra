@@ -58,3 +58,9 @@ prisma/migrations/**/*.sql
 
 # Astro
 .astro/
+
+# Claude Code
+.claude/
+
+# Windows problematic files
+nul
