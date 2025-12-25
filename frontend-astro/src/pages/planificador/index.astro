@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MenuPlanner from '../../islands/MenuPlanner';
+
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
+---
+
+<Layout title="Planificador de Menús - NutreTerra">
+  <MenuPlanner apiUrl={API_URL} client:load />
+</Layout>

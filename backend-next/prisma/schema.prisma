@@ -32,6 +32,7 @@ model User {
   orders    Order[]
   reviews   Review[]
   cart      Cart?
+  menus     Menu[]
 
   @@map("users")
 }
@@ -134,6 +135,7 @@ model Product {
   cartItems    CartItem[]
   orderItems   OrderItem[]
   reviews      Review[]
+  menuItems    MenuItem[]
 
   @@map("products")
 }
@@ -289,4 +291,55 @@ model Review {
 
   @@unique([userId, productId])
   @@map("reviews")
+}
+
+// ========================================
+// PLANIFICADOR DE MENÚS
+// ========================================
+
+model Menu {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  userId      String? // Null si es un menú creado por admin
+  isTemplate  Boolean  @default(false) // True si es una plantilla reutilizable
+  isPublic    Boolean  @default(false) // True si otros usuarios pueden verlo
+  startDate   DateTime? // Fecha de inicio del menú
+  endDate     DateTime? // Fecha de fin del menú
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items MenuItem[]
+
+  @@map("menus")
+}
+
+model MenuItem {
+  id        String   @id @default(cuid())
+  menuId    String
+  productId String
+  day       Int // Día de la semana (0=Lunes, 6=Domingo)
+  mealType  MealType // Tipo de comida (BREAKFAST, LUNCH, DINNER, SNACK)
+  order     Int      @default(0) // Orden dentro del mismo día y tipo de comida
+  quantity  Int      @default(1)
+  notes     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  menu    Menu    @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("menu_items")
+}
+
+enum MealType {
+  BREAKFAST // Desayuno
+  LUNCH     // Comida
+  DINNER    // Cena
+  SNACK     // Snack
 }
