@@ -27,6 +27,10 @@ interface Product {
   imageUrl: string;
   images: string[];
   weight: number | null;
+  calories: number | null;
+  protein: number | null;
+  carbohydrates: number | null;
+  fat: number | null;
   active: boolean;
   featured: boolean;
   categoryId: string;
@@ -270,8 +274,79 @@ export default function ProductForm({ product, categories, tags }: ProductFormPr
             />
           </div>
         </div>
+      </div>
 
-        <div className="mt-6">
+      {/* Información Nutricional */}
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-lg font-semibold mb-4">Información Nutricional</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div>
+            <label htmlFor="calories" className="block text-sm font-medium text-gray-700">
+              Calorías (kcal)
+            </label>
+            <input
+              type="number"
+              id="calories"
+              name="calories"
+              step="0.1"
+              min="0"
+              defaultValue={product?.calories || ''}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7FB14B] focus:ring-[#7FB14B] sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="protein" className="block text-sm font-medium text-gray-700">
+              Proteínas (g)
+            </label>
+            <input
+              type="number"
+              id="protein"
+              name="protein"
+              step="0.1"
+              min="0"
+              defaultValue={product?.protein || ''}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7FB14B] focus:ring-[#7FB14B] sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="carbohydrates" className="block text-sm font-medium text-gray-700">
+              Carbohidratos (g)
+            </label>
+            <input
+              type="number"
+              id="carbohydrates"
+              name="carbohydrates"
+              step="0.1"
+              min="0"
+              defaultValue={product?.carbohydrates || ''}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7FB14B] focus:ring-[#7FB14B] sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="fat" className="block text-sm font-medium text-gray-700">
+              Grasas (g)
+            </label>
+            <input
+              type="number"
+              id="fat"
+              name="fat"
+              step="0.1"
+              min="0"
+              defaultValue={product?.fat || ''}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7FB14B] focus:ring-[#7FB14B] sm:text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-lg font-semibold mb-4">Descripción</h2>
+
+        <div>
           <label htmlFor="shortDescription" className="block text-sm font-medium text-gray-700">
             Descripción Corta *
           </label>

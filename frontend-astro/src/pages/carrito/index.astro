@@ -2,15 +2,15 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import MenuPlanner from '../../islands/MenuPlanner';
+import CartManager from '../../islands/CartManager';
 
 const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3001';
 ---
 
-<Layout title="Planificador de Menús - NutreTerra">
+<Layout title="Carrito - NutreTerra">
   <Header />
   <main>
-    <MenuPlanner apiUrl={API_URL} client:load />
+    <CartManager apiUrl={API_URL} client:load />
   </main>
   <Footer />
 </Layout>

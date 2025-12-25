@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
   DndContext,
   DragOverlay,
   closestCenter,
-  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -12,7 +11,6 @@ import {
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
@@ -21,42 +19,46 @@ import { CSS } from '@dnd-kit/utilities';
 interface Product {
   id: string;
   name: string;
+  slug: string;
   imageUrl: string;
   price: number;
+  calories: number | null;
+  protein: number | null;
+  carbohydrates: number | null;
+  fat: number | null;
   category: {
+    id: string;
     name: string;
+    slug: string;
   };
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
 }
 
 interface MenuItem {
   id: string;
   productId: string;
   day: number;
-  mealType: 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'SNACK';
-  order: number;
-  quantity: number;
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack';
   product: Product;
 }
 
-interface Menu {
-  id?: string;
-  name: string;
-  description?: string;
-  items: MenuItem[];
-}
-
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-const MEAL_TYPES = [
-  { key: 'BREAKFAST', label: 'Desayuno', color: 'bg-yellow-100 border-yellow-300' },
-  { key: 'LUNCH', label: 'Comida', color: 'bg-orange-100 border-orange-300' },
-  { key: 'DINNER', label: 'Cena', color: 'bg-blue-100 border-blue-300' },
-  { key: 'SNACK', label: 'Snack', color: 'bg-green-100 border-green-300' },
-];
 
-// Componente de producto en la lista de disponibles
-function ProductItem({ product }: { product: Product }) {
+const MEALS = [
+  { key: 'breakfast', label: 'Desayuno', icon: '🌅', color: 'bg-amber-50 border-amber-200' },
+  { key: 'lunch', label: 'Comida', icon: '🍽️', color: 'bg-orange-50 border-orange-200' },
+  { key: 'dinner', label: 'Cena', icon: '🌙', color: 'bg-blue-50 border-blue-200' },
+  { key: 'snack', label: 'Snack', icon: '🍎', color: 'bg-green-50 border-green-200' },
+] as const;
+
+function SortableProductCard({ product }: { product: Product }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: `product-${product.id}`,
+    id: product.id,
   });
 
   const style = {
@@ -71,294 +73,348 @@ function ProductItem({ product }: { product: Product }) {
       style={style}
       {...attributes}
       {...listeners}
-      className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg cursor-move hover:shadow-md transition-shadow"
+      className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing border border-gray-200 p-3"
     >
-      <img
-        src={product.imageUrl}
-        alt={product.name}
-        className="w-16 h-16 object-cover rounded"
-      />
-      <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-sm text-gray-900 truncate">{product.name}</h4>
-        <p className="text-xs text-gray-500">{product.category.name}</p>
-        <p className="text-sm font-semibold text-primary">{product.price.toFixed(2)}€</p>
+      <div className="flex items-center gap-3">
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+        />
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-sm text-gray-900 truncate mb-1">
+            {product.name}
+          </h4>
+          <p className="text-xs text-gray-500 mb-1">{product.category.name}</p>
+          {product.calories && (
+            <p className="text-xs text-gray-600">
+              {product.calories} kcal • {product.protein}g prot
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-// Componente de item en el menú
 function MenuItemCard({ item, onRemove }: { item: MenuItem; onRemove: () => void }) {
   return (
-    <div className="flex items-center gap-2 p-2 bg-white border border-gray-300 rounded-lg">
-      <img
-        src={item.product.imageUrl}
-        alt={item.product.name}
-        className="w-12 h-12 object-cover rounded"
-      />
-      <div className="flex-1 min-w-0">
-        <h5 className="font-medium text-xs text-gray-900 truncate">{item.product.name}</h5>
-        <p className="text-xs text-gray-500">x{item.quantity}</p>
+    <div className="bg-white rounded-lg border-2 border-gray-200 p-2 shadow-sm">
+      <div className="flex items-start gap-2">
+        <img
+          src={item.product.imageUrl}
+          alt={item.product.name}
+          className="w-14 h-14 rounded object-cover flex-shrink-0"
+        />
+        <div className="flex-1 min-w-0">
+          <h5 className="font-medium text-xs text-gray-900 truncate mb-1">
+            {item.product.name}
+          </h5>
+          {item.product.calories && (
+            <p className="text-xs text-gray-500">
+              {item.product.calories} kcal
+            </p>
+          )}
+        </div>
+        <button
+          onClick={onRemove}
+          className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-1 transition-colors"
+          title="Eliminar"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
-      <button
-        onClick={onRemove}
-        className="text-red-500 hover:text-red-700 transition-colors p-1"
-        title="Eliminar"
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
     </div>
   );
 }
 
 export default function MenuPlanner({ apiUrl }: { apiUrl: string }) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [menu, setMenu] = useState<Menu>({
-    name: 'Mi Menú Semanal',
-    description: '',
-    items: [],
-  });
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
     })
   );
 
-  // Cargar productos
+  // Cargar productos y categorías
   useEffect(() => {
-    fetch(`${apiUrl}/api/products`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((error) => console.error('Error loading products:', error));
+    const fetchData = async () => {
+      try {
+        console.log('[MenuPlanner] Fetching from:', apiUrl);
+        const [productsRes, categoriesRes] = await Promise.all([
+          fetch(`${apiUrl}/api/products`),
+          fetch(`${apiUrl}/api/categories`),
+        ]);
+
+        console.log('[MenuPlanner] Response status:', productsRes.status, categoriesRes.status);
+
+        const productsData = await productsRes.json();
+        const categoriesData = await categoriesRes.json();
+
+        console.log('[MenuPlanner] Products loaded:', productsData.length);
+        console.log('[MenuPlanner] Categories loaded:', categoriesData.length);
+
+        setProducts(productsData);
+        setFilteredProducts(productsData);
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error('[MenuPlanner] Error cargando datos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [apiUrl]);
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
-  };
+  // Aplicar filtros
+  useEffect(() => {
+    let filtered = [...products];
+
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(p => p.category.slug === selectedCategory);
+    }
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(query) ||
+        p.category.name.toLowerCase().includes(query)
+      );
+    }
+
+    setFilteredProducts(filtered);
+  }, [selectedCategory, searchQuery, products]);
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (!over) {
-      setActiveId(null);
-      return;
-    }
-
-    // Extraer información del drop zone
-    const overId = over.id as string;
-    const [type, day, mealType] = overId.split('-');
-
-    if (type === 'dropzone' && active.id.toString().startsWith('product-')) {
-      // Agregar producto al menú
-      const productId = active.id.toString().replace('product-', '');
-      const product = products.find((p) => p.id === productId);
-
-      if (product) {
-        const dayIndex = parseInt(day);
-        const existingItems = menu.items.filter(
-          (item) => item.day === dayIndex && item.mealType === mealType
-        );
-
-        const newItem: MenuItem = {
-          id: `temp-${Date.now()}`,
-          productId: product.id,
-          day: dayIndex,
-          mealType: mealType as any,
-          order: existingItems.length,
-          quantity: 1,
-          product,
-        };
-
-        setMenu((prev) => ({
-          ...prev,
-          items: [...prev.items, newItem],
-        }));
-      }
-    }
-
     setActiveId(null);
   };
 
-  const removeItem = (itemId: string) => {
-    setMenu((prev) => ({
-      ...prev,
-      items: prev.items.filter((item) => item.id !== itemId),
-    }));
+  const addToMenu = (product: Product, day: number, mealType: typeof MEALS[number]['key']) => {
+    const newItem: MenuItem = {
+      id: `${Date.now()}-${Math.random()}`,
+      productId: product.id,
+      day,
+      mealType,
+      product,
+    };
+    setMenuItems([...menuItems, newItem]);
   };
 
-  const saveMenu = async () => {
-    setIsSaving(true);
-    setMessage(null);
-
-    try {
-      const response = await fetch(`${apiUrl}/api/menus`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...menu,
-          items: menu.items.map((item) => ({
-            productId: item.productId,
-            day: item.day,
-            mealType: item.mealType,
-            order: item.order,
-            quantity: item.quantity,
-          })),
-        }),
-      });
-
-      if (response.ok) {
-        const savedMenu = await response.json();
-        setMenu(savedMenu);
-        setMessage({ type: 'success', text: 'Menú guardado correctamente' });
-      } else {
-        throw new Error('Error al guardar el menú');
-      }
-    } catch (error) {
-      console.error('Error saving menu:', error);
-      setMessage({ type: 'error', text: 'Error al guardar el menú' });
-    } finally {
-      setIsSaving(false);
-    }
+  const removeFromMenu = (itemId: string) => {
+    setMenuItems(menuItems.filter(item => item.id !== itemId));
   };
 
   const getItemsForSlot = (day: number, mealType: string) => {
-    return menu.items.filter((item) => item.day === day && item.mealType === mealType);
+    return menuItems.filter(item => item.day === day && item.mealType === mealType);
   };
 
-  const activeProduct = activeId
-    ? products.find((p) => `product-${p.id}` === activeId)
-    : null;
+  const getTotalMacros = () => {
+    return menuItems.reduce(
+      (acc, item) => ({
+        calories: acc.calories + (item.product.calories || 0),
+        protein: acc.protein + (item.product.protein || 0),
+        carbs: acc.carbs + (item.product.carbohydrates || 0),
+        fat: acc.fat + (item.product.fat || 0),
+      }),
+      { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    );
+  };
+
+  const sendToCart = () => {
+    alert('Funcionalidad de carrito próximamente!');
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-primary"></div>
+          <p className="mt-4 text-gray-600 text-lg">Cargando productos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const totals = getTotalMacros();
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Planificador de Menús</h1>
-          <p className="text-gray-600">Arrastra productos a cada día y comida para crear tu menú semanal</p>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Sidebar de Productos */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-4 space-y-4">
+            {/* Filtros */}
+            <div className="bg-white rounded-xl shadow-lg p-4">
+              <h3 className="font-bold text-lg text-gray-900 mb-4">Productos Disponibles</h3>
 
-        {/* Mensaje de estado */}
-        {message && (
-          <div
-            className={`mb-6 p-4 rounded-lg ${
-              message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-            }`}
-          >
-            {message.text}
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar: Lista de productos */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-4">
-              <h2 className="text-xl font-semibold mb-4">Productos Disponibles</h2>
-              <SortableContext
-                items={products.map((p) => `product-${p.id}`)}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="space-y-2 max-h-[800px] overflow-y-auto pr-2">
-                  {products.map((product) => (
-                    <ProductItem key={product.id} product={product} />
-                  ))}
-                </div>
-              </SortableContext>
-            </div>
-          </div>
-
-          {/* Main: Planificador semanal */}
-          <div className="lg:col-span-3">
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-              <div className="flex gap-4 mb-4">
+              {/* Búsqueda */}
+              <div className="mb-4">
                 <input
                   type="text"
-                  value={menu.name}
-                  onChange={(e) => setMenu({ ...menu, name: e.target.value })}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Nombre del menú"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Buscar..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                 />
-                <button
-                  onClick={saveMenu}
-                  disabled={isSaving}
-                  className="px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-leaf transition-colors disabled:opacity-50"
-                >
-                  {isSaving ? 'Guardando...' : 'Guardar Menú'}
-                </button>
               </div>
+
+              {/* Categorías */}
+              <div className="mb-4">
+                <label className="block text-xs font-semibold text-gray-700 mb-2">
+                  Categoría
+                </label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                >
+                  <option value="all">Todas</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.slug}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <p className="text-xs text-gray-500 mb-3">
+                {filteredProducts.length} producto{filteredProducts.length !== 1 ? 's' : ''}
+              </p>
             </div>
 
-            {/* Grid semanal */}
-            <div className="grid grid-cols-1 gap-6">
-              {DAYS.map((dayName, dayIndex) => (
-                <div key={dayIndex} className="bg-white rounded-xl shadow-lg p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{dayName}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {MEAL_TYPES.map((mealType) => {
-                      const items = getItemsForSlot(dayIndex, mealType.key);
-                      return (
-                        <div
-                          key={mealType.key}
-                          id={`dropzone-${dayIndex}-${mealType.key}`}
-                          className={`min-h-[120px] p-3 rounded-lg border-2 border-dashed ${mealType.color}`}
-                        >
-                          <h4 className="font-semibold text-sm text-gray-700 mb-2">
-                            {mealType.label}
-                          </h4>
-                          <div className="space-y-2">
-                            {items.map((item) => (
+            {/* Lista de Productos */}
+            <div className="bg-white rounded-xl shadow-lg p-4 max-h-[600px] overflow-y-auto">
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={filteredProducts.map(p => p.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-2">
+                    {filteredProducts.map((product) => (
+                      <SortableProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                </SortableContext>
+
+                <DragOverlay>
+                  {activeId ? (
+                    <div className="bg-white rounded-lg shadow-xl p-3 border-2 border-primary">
+                      {/* Overlay content */}
+                    </div>
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
+            </div>
+          </div>
+        </div>
+
+        {/* Planificador */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Resumen de Macros */}
+          {menuItems.length > 0 && (
+            <div className="bg-gradient-to-r from-primary to-leaf rounded-xl shadow-lg p-6 text-white">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold">Resumen Semanal</h3>
+                <button
+                  onClick={sendToCart}
+                  className="bg-white text-primary px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                >
+                  Añadir al Carrito
+                </button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                  <p className="text-sm opacity-90">Calorías</p>
+                  <p className="text-2xl font-bold">{Math.round(totals.calories)}</p>
+                </div>
+                <div className="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                  <p className="text-sm opacity-90">Proteína</p>
+                  <p className="text-2xl font-bold">{Math.round(totals.protein)}g</p>
+                </div>
+                <div className="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                  <p className="text-sm opacity-90">Carbohidratos</p>
+                  <p className="text-2xl font-bold">{Math.round(totals.carbs)}g</p>
+                </div>
+                <div className="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                  <p className="text-sm opacity-90">Grasas</p>
+                  <p className="text-2xl font-bold">{Math.round(totals.fat)}g</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Cuadrícula de Días */}
+          <div className="space-y-4">
+            {DAYS.map((dayName, dayIndex) => (
+              <div key={dayIndex} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900">{dayName}</h3>
+                </div>
+                <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {MEALS.map((meal) => {
+                    const items = getItemsForSlot(dayIndex, meal.key);
+                    return (
+                      <div key={meal.key} className={`${meal.color} rounded-lg border-2 p-3`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xl">{meal.icon}</span>
+                          <h4 className="font-semibold text-sm text-gray-800">{meal.label}</h4>
+                        </div>
+                        <div className="space-y-2 min-h-[80px]">
+                          {items.length > 0 ? (
+                            items.map((item) => (
                               <MenuItemCard
                                 key={item.id}
                                 item={item}
-                                onRemove={() => removeItem(item.id)}
+                                onRemove={() => removeFromMenu(item.id)}
                               />
-                            ))}
-                            {items.length === 0 && (
-                              <p className="text-xs text-gray-400 italic text-center py-4">
-                                Arrastra un producto aquí
+                            ))
+                          ) : (
+                            <div className="text-center py-4">
+                              <p className="text-xs text-gray-400">
+                                Haz clic en un producto para agregarlo
                               </p>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
-                      );
-                    })}
-                  </div>
+                        {items.length === 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            {filteredProducts.slice(0, 3).map((product) => (
+                              <button
+                                key={product.id}
+                                onClick={() => addToMenu(product, dayIndex, meal.key)}
+                                className="text-xs bg-white hover:bg-gray-50 px-2 py-1 rounded border border-gray-300 transition-colors"
+                              >
+                                + {product.name.split(' ').slice(0, 2).join(' ')}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-
-      <DragOverlay>
-        {activeProduct ? (
-          <div className="flex items-center gap-3 p-3 bg-white border-2 border-primary rounded-lg shadow-xl">
-            <img
-              src={activeProduct.imageUrl}
-              alt={activeProduct.name}
-              className="w-16 h-16 object-cover rounded"
-            />
-            <div>
-              <h4 className="font-medium text-sm">{activeProduct.name}</h4>
-              <p className="text-xs text-gray-500">{activeProduct.category.name}</p>
-            </div>
-          </div>
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+    </div>
   );
 }

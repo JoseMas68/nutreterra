@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "products" ADD COLUMN     "calories" DOUBLE PRECISION,
+ADD COLUMN     "carbohydrates" DOUBLE PRECISION,
+ADD COLUMN     "fat" DOUBLE PRECISION,
+ADD COLUMN     "protein" DOUBLE PRECISION;

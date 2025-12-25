@@ -54,6 +54,17 @@ export async function GET(req: NextRequest) {
             },
           },
         },
+        productLines: {
+          include: {
+            productLine: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -65,6 +76,7 @@ export async function GET(req: NextRequest) {
     const formattedProducts = products.map((product) => ({
       ...product,
       tags: product.tags.map((pt) => pt.tag),
+      productLine: product.productLines.length > 0 ? product.productLines[0].productLine : null,
     }));
 
     return NextResponse.json(formattedProducts);

@@ -1,0 +1,31 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ProductCatalog from '../../islands/ProductCatalog';
+
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3001';
+---
+
+<Layout title="Todos los Productos - NutreTerra" description="Explora nuestro catálogo completo de platos preparados saludables">
+  <Header />
+
+  <main class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-primary to-leaf py-12">
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+          Nuestros Platos
+        </h1>
+        <p class="text-xl text-white/90 max-w-2xl mx-auto">
+          Descubre todos nuestros platos preparados saludables. Filtra por categoría o línea de producto para encontrar exactamente lo que buscas.
+        </p>
+      </div>
+    </section>
+
+    <!-- Catálogo con Filtros -->
+    <ProductCatalog apiUrl={API_URL} client:load />
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,5 +1,5 @@
 // Servicio para conectar con la API del backend
-const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3001';
 
 export interface Product {
   id: string;
@@ -15,7 +15,16 @@ export interface Product {
   images?: string[];
   featured: boolean;
   active: boolean;
+  calories?: number;
+  protein?: number;
+  carbohydrates?: number;
+  fat?: number;
   category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  productLine?: {
     id: string;
     name: string;
     slug: string;
@@ -61,7 +70,7 @@ export async function getProducts(params?: {
   if (params?.search) searchParams.set('search', params.search);
   if (params?.limit) searchParams.set('limit', params.limit.toString());
 
-  const url = `${API_URL}/products${searchParams.toString() ? `?${searchParams}` : ''}`;
+  const url = `${API_URL}/api/products${searchParams.toString() ? `?${searchParams}` : ''}`;
 
   try {
     const response = await fetch(url);
@@ -78,7 +87,7 @@ export async function getProducts(params?: {
 // Obtener un producto por slug
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
-    const response = await fetch(`${API_URL}/products/${slug}`);
+    const response = await fetch(`${API_URL}/api/products/${slug}`);
     if (!response.ok) {
       if (response.status === 404) return null;
       throw new Error(`Error fetching product: ${response.statusText}`);
@@ -93,7 +102,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 // Obtener todas las categorías
 export async function getCategories(): Promise<Category[]> {
   try {
-    const response = await fetch(`${API_URL}/categories`);
+    const response = await fetch(`${API_URL}/api/categories`);
     if (!response.ok) {
       throw new Error(`Error fetching categories: ${response.statusText}`);
     }
@@ -107,7 +116,7 @@ export async function getCategories(): Promise<Category[]> {
 // Obtener una categoría por slug
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   try {
-    const response = await fetch(`${API_URL}/categories/${slug}`);
+    const response = await fetch(`${API_URL}/api/categories/${slug}`);
     if (!response.ok) {
       if (response.status === 404) return null;
       throw new Error(`Error fetching category: ${response.statusText}`);
@@ -122,7 +131,7 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 // Obtener todas las líneas de producto
 export async function getProductLines(): Promise<ProductLine[]> {
   try {
-    const response = await fetch(`${API_URL}/product-lines`);
+    const response = await fetch(`${API_URL}/api/product-lines`);
     if (!response.ok) {
       throw new Error(`Error fetching product lines: ${response.statusText}`);
     }

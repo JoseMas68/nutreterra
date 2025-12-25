@@ -29,6 +29,17 @@ export async function GET(
             },
           },
         },
+        productLines: {
+          include: {
+            productLine: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
         reviews: {
           include: {
             user: {
@@ -53,6 +64,7 @@ export async function GET(
     const formattedProduct = {
       ...product,
       tags: product.tags.map((pt) => pt.tag),
+      productLine: product.productLines.length > 0 ? product.productLines[0].productLine : null,
     };
 
     return NextResponse.json(formattedProduct);

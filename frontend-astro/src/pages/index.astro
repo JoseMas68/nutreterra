@@ -26,90 +26,284 @@ const productLines = (await getProductLines()).filter(line => line.active);
   <Hero />
 
   <!-- Productos Destacados -->
-  <section class="section">
+  <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
       <div class="text-center mb-12">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Productos <span class="text-primary">Destacados</span>
         </h2>
         <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-          Descubre nuestra selección de productos más populares, cuidadosamente elegidos para tu bienestar.
+          Descubre nuestra selección de platos preparados más populares
         </p>
       </div>
 
-      <!-- Grid de Productos -->
-      <div class="product-grid">
+      <!-- Grid de Productos - Compacto -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {featuredProducts.map((product) => (
-          <ProductCard product={product} />
+          <a href={`/producto/${product.slug}`} class="group">
+            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
+              <div class="relative overflow-hidden aspect-square">
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                {product.compareAtPrice && (
+                  <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                    OFERTA
+                  </div>
+                )}
+              </div>
+              <div class="p-4 flex-1 flex flex-col">
+                <h3 class="font-semibold text-gray-900 mb-2 text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors">
+                  {product.name}
+                </h3>
+                {product.calories && (
+                  <p class="text-xs text-gray-500 mb-2">
+                    {product.calories} kcal • {product.protein}g proteína
+                  </p>
+                )}
+                <div class="mt-auto">
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-lg md:text-xl font-bold text-primary">
+                      {product.price.toFixed(2)}€
+                    </span>
+                    {product.compareAtPrice && (
+                      <span class="text-sm text-gray-400 line-through">
+                        {product.compareAtPrice.toFixed(2)}€
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
         ))}
       </div>
 
       <!-- Ver todos -->
       <div class="text-center mt-12">
-        <a href="/categoria/cereales" class="btn-primary btn-lg">
-          Ver Todos los Productos
+        <a href="/productos" class="inline-block px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-leaf transition-all transform hover:scale-105 shadow-lg">
+          Ver Todos Nuestros Productos
         </a>
       </div>
     </div>
   </section>
 
-  <!-- Líneas de Producto (Masonry Grid) -->
-  <section class="section section-cream">
+  <!-- Cómo Funciona - Dos Formas de Comprar -->
+  <section class="py-16 bg-gradient-to-br from-primary/5 via-leaf/5 to-cream/30">
     <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Nuestras <span class="text-primary">Líneas de Producto</span>
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+          ¿Cansado de <span class="text-primary">Planificar tus Comidas</span>?
         </h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-          Explora nuestras colecciones especializadas diseñadas para diferentes estilos de vida.
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-4">
+          Nosotros nos encargamos. Elige la forma que mejor se adapte a ti:
+        </p>
+        <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+          Puedes mezclar ambas opciones como prefieras
         </p>
       </div>
 
-      <!-- Masonry Grid -->
-      <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-        {productLines.map((line, index) => (
-          <a
-            href={`/linea/${line.slug}`}
-            class="block break-inside-avoid bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
-            style={`margin-bottom: ${index % 3 === 0 ? '1.5rem' : index % 3 === 1 ? '2.5rem' : '2rem'}`}
-          >
-            <div class="p-8">
-              <!-- Icono -->
-              <div
-                class="w-16 h-16 mb-4 text-primary group-hover:scale-110 transition-transform duration-300"
-                set:html={line.icon}
-              />
-
-              <!-- Nombre -->
-              <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
-                {line.name}
-              </h3>
-
-              <!-- Descripción -->
-              <p class="text-gray-600 mb-4 leading-relaxed">
-                {line.description}
-              </p>
-
-              <!-- Contador de productos -->
-              {line.productCount && line.productCount > 0 && (
-                <div class="flex items-center gap-2 text-sm text-gray-500">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                  </svg>
-                  <span>{line.productCount} productos</span>
-                </div>
-              )}
-
-              <!-- Link -->
-              <div class="mt-4 flex items-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all">
-                <span>Explorar línea</span>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-              </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
+        <!-- Opción 1: Planificador -->
+        <div class="relative group">
+          <div class="bg-white rounded-3xl shadow-2xl p-10 hover:shadow-3xl transition-all duration-500 border-2 border-transparent hover:border-primary/30 h-full flex flex-col">
+            <div class="absolute -top-5 -right-5 w-16 h-16 bg-gradient-to-br from-primary to-leaf rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-xl group-hover:scale-110 transition-transform duration-300">
+              1
             </div>
-          </a>
-        ))}
+
+            <div class="w-24 h-24 bg-gradient-to-br from-primary to-leaf rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-xl">
+              <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+
+            <h3 class="text-3xl font-bold text-gray-900 mb-4 text-center group-hover:text-primary transition-colors">
+              Planificador Semanal
+            </h3>
+
+            <p class="text-gray-600 text-center leading-relaxed text-lg mb-6 flex-1">
+              <span class="font-semibold text-primary">Arrastra y suelta</span> los platos en nuestro calendario semanal.
+              Visualiza tus <span class="font-semibold">macros totales</span> y asegúrate de cumplir tus objetivos nutricionales.
+              Perfecto si te gusta <span class="font-semibold">planificar con anticipación</span>.
+            </p>
+
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center gap-3 text-gray-700">
+                <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Vista semanal completa</span>
+              </li>
+              <li class="flex items-center gap-3 text-gray-700">
+                <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Contador de macros automático</span>
+              </li>
+              <li class="flex items-center gap-3 text-gray-700">
+                <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Guarda y reutiliza tus menús</span>
+              </li>
+            </ul>
+
+            <a href="/planificador" class="block w-full px-8 py-4 bg-gradient-to-r from-primary to-leaf text-white font-bold rounded-xl hover:shadow-2xl transition-all transform hover:scale-105 text-center text-lg">
+              🗓️ Crear Mi Menú Semanal
+            </a>
+          </div>
+        </div>
+
+        <!-- Opción 2: Catálogo -->
+        <div class="relative group">
+          <div class="bg-white rounded-3xl shadow-2xl p-10 hover:shadow-3xl transition-all duration-500 border-2 border-transparent hover:border-leaf/30 h-full flex flex-col">
+            <div class="absolute -top-5 -right-5 w-16 h-16 bg-gradient-to-br from-leaf to-accent rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-xl group-hover:scale-110 transition-transform duration-300">
+              2
+            </div>
+
+            <div class="w-24 h-24 bg-gradient-to-br from-leaf to-accent rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-xl">
+              <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+            </div>
+
+            <h3 class="text-3xl font-bold text-gray-900 mb-4 text-center group-hover:text-leaf transition-colors">
+              Nuestros Platos
+            </h3>
+
+            <p class="text-gray-600 text-center leading-relaxed text-lg mb-6 flex-1">
+              Navega por nuestro <span class="font-semibold text-leaf">catálogo completo</span> de platos preparados.
+              Filtra por categoría o línea de producto y añade al carrito lo que más te apetezca.
+              Ideal si prefieres <span class="font-semibold">comprar sobre la marcha</span>.
+            </p>
+
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center gap-3 text-gray-700">
+                <svg class="w-6 h-6 text-leaf flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Filtros por categoría y línea</span>
+              </li>
+              <li class="flex items-center gap-3 text-gray-700">
+                <svg class="w-6 h-6 text-leaf flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Búsqueda rápida de platos</span>
+              </li>
+              <li class="flex items-center gap-3 text-gray-700">
+                <svg class="w-6 h-6 text-leaf flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Compra solo lo que necesitas</span>
+              </li>
+            </ul>
+
+            <a href="/productos" class="block w-full px-8 py-4 bg-gradient-to-r from-leaf to-accent text-white font-bold rounded-xl hover:shadow-2xl transition-all transform hover:scale-105 text-center text-lg">
+              🍽️ Ver Todos Nuestros Platos
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Entrega -->
+      <div class="text-center max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+        <div class="w-16 h-16 bg-gradient-to-br from-accent to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-3">Recibe en 24-48h</h3>
+        <p class="text-gray-600 text-lg">
+          Sea cual sea la opción que elijas, tus comidas frescas y saludables llegarán a tu puerta.
+          <span class="font-semibold text-primary">Envío gratis desde 50€</span>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Líneas de Producto -->
+  <section class="py-20 bg-gradient-to-br from-cream/50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+          Nuestras <span class="bg-gradient-to-r from-primary to-leaf bg-clip-text text-transparent">Líneas de Producto</span>
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Explora nuestras colecciones especializadas diseñadas para tu estilo de vida
+        </p>
+      </div>
+
+      <!-- Grid de Líneas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {productLines.map((line, index) => {
+          const gradients = [
+            'from-primary/10 to-primary/5',
+            'from-leaf/10 to-leaf/5',
+            'from-accent/10 to-accent/5',
+          ];
+          const borderColors = [
+            'group-hover:border-primary/30',
+            'group-hover:border-leaf/30',
+            'group-hover:border-accent/30',
+          ];
+          const textColors = [
+            'group-hover:text-primary',
+            'group-hover:text-leaf',
+            'group-hover:text-accent',
+          ];
+
+          return (
+            <a
+              href={`/linea/${line.slug}`}
+              class={`group relative bg-gradient-to-br ${gradients[index % 3]} rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-transparent ${borderColors[index % 3]} transform hover:-translate-y-2`}
+            >
+              <div class="p-8 relative z-10">
+                <!-- Icono -->
+                <div
+                  class="w-20 h-20 mb-6 text-gray-700 group-hover:scale-125 group-hover:rotate-6 transition-all duration-500"
+                  set:html={line.icon}
+                />
+
+                <!-- Nombre -->
+                <h3 class={`text-2xl font-bold text-gray-900 mb-3 ${textColors[index % 3]} transition-colors duration-300`}>
+                  {line.name}
+                </h3>
+
+                <!-- Descripción -->
+                <p class="text-gray-600 mb-6 leading-relaxed min-h-[80px]">
+                  {line.description}
+                </p>
+
+                <!-- Footer con contador y link -->
+                <div class="flex items-center justify-between pt-4 border-t border-gray-200/50">
+                  {line.productCount && line.productCount > 0 && (
+                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                      <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                      </div>
+                      <span class="font-semibold">{line.productCount} productos</span>
+                    </div>
+                  )}
+
+                  <!-- Arrow -->
+                  <div class="flex items-center gap-2 text-gray-700 font-semibold group-hover:gap-4 transition-all duration-300">
+                    <span class="text-sm">Explorar</span>
+                    <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Decorative circle -->
+              <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            </a>
+          );
+        })}
       </div>
     </div>
   </section>
@@ -136,46 +330,87 @@ const productLines = (await getProductLines()).filter(line => line.active);
   </section>
 
   <!-- Por qué elegirnos -->
-  <section class="section">
+  <section class="py-20 bg-gradient-to-br from-white via-primary/5 to-leaf/5">
     <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          ¿Por qué <span class="text-primary">NutreTerra</span>?
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
+          ¿Por qué elegir <span class="bg-gradient-to-r from-primary to-leaf bg-clip-text text-transparent">NutreTerra</span>?
         </h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Más que comida saludable, es tu aliado para una vida equilibrada
+        </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <!-- Feature 1 -->
-        <div class="text-center">
-          <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
+        <div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 p-8 text-center transform hover:-translate-y-2 border-2 border-transparent hover:border-primary/20">
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">100% Saludable</h3>
+            <p class="text-gray-600 leading-relaxed">Ingredientes naturales, sin conservantes ni procesados. Certificación nutricional en cada plato.</p>
           </div>
-          <h3 class="text-xl font-semibold mb-2">Productos Certificados</h3>
-          <p class="text-gray-600">Todos nuestros productos cuentan con certificación ecológica y de calidad.</p>
         </div>
 
         <!-- Feature 2 -->
-        <div class="text-center">
-          <div class="w-16 h-16 bg-leaf/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-leaf" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+        <div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 p-8 text-center transform hover:-translate-y-2 border-2 border-transparent hover:border-leaf/20">
+          <div class="absolute inset-0 bg-gradient-to-br from-leaf/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-20 h-20 bg-gradient-to-br from-leaf to-leaf/60 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-leaf transition-colors">Ahorra Tiempo</h3>
+            <p class="text-gray-600 leading-relaxed">Olvídate de cocinar y planificar. Platos listos en minutos para que disfrutes tu tiempo libre.</p>
           </div>
-          <h3 class="text-xl font-semibold mb-2">Mejores Precios</h3>
-          <p class="text-gray-600">Precios competitivos sin comprometer la calidad de nuestros productos.</p>
         </div>
 
         <!-- Feature 3 -->
-        <div class="text-center">
-          <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-            </svg>
+        <div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 p-8 text-center transform hover:-translate-y-2 border-2 border-transparent hover:border-accent/20">
+          <div class="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-20 h-20 bg-gradient-to-br from-accent to-accent/60 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-accent transition-colors">Control de Macros</h3>
+            <p class="text-gray-600 leading-relaxed">Información nutricional detallada. Alcanza tus objetivos con precisión y sin complicaciones.</p>
           </div>
-          <h3 class="text-xl font-semibold mb-2">Envío Rápido</h3>
-          <p class="text-gray-600">Envío gratis en pedidos superiores a 50€. Recibe tu pedido en 24-48h.</p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 p-8 text-center transform hover:-translate-y-2 border-2 border-transparent hover:border-primary/20">
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">Envío Express</h3>
+            <p class="text-gray-600 leading-relaxed">Entrega en 24-48h. Envío gratis desde 50€. Tus comidas frescas cuando las necesites.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA adicional -->
+      <div class="mt-16 text-center">
+        <div class="inline-block bg-white rounded-2xl shadow-xl p-8 max-w-2xl">
+          <p class="text-2xl font-bold text-gray-900 mb-4">
+            ¿Listo para empezar tu transformación saludable?
+          </p>
+          <p class="text-gray-600 mb-6">
+            Únete a miles de personas que ya han mejorado su alimentación con NutreTerra
+          </p>
+          <a href="/planificador" class="inline-block px-10 py-4 bg-gradient-to-r from-primary to-leaf text-white font-bold rounded-xl hover:shadow-2xl transition-all transform hover:scale-105">
+            Crear Mi Primer Menú Gratis
+          </a>
         </div>
       </div>
     </div>

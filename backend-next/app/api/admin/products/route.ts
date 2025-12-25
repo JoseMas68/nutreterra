@@ -28,6 +28,18 @@ export async function POST(req: NextRequest) {
     const weight = formData.get('weight')
       ? parseFloat(formData.get('weight') as string)
       : null;
+    const calories = formData.get('calories')
+      ? parseFloat(formData.get('calories') as string)
+      : null;
+    const protein = formData.get('protein')
+      ? parseFloat(formData.get('protein') as string)
+      : null;
+    const carbohydrates = formData.get('carbohydrates')
+      ? parseFloat(formData.get('carbohydrates') as string)
+      : null;
+    const fat = formData.get('fat')
+      ? parseFloat(formData.get('fat') as string)
+      : null;
     const categoryId = formData.get('categoryId') as string;
     const active = formData.get('active') === 'on';
     const featured = formData.get('featured') === 'on';
@@ -79,6 +91,10 @@ export async function POST(req: NextRequest) {
         compareAtPrice,
         stock,
         weight,
+        calories,
+        protein,
+        carbohydrates,
+        fat,
         imageUrl,
         images: galleryImages,
         active,

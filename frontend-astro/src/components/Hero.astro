@@ -2,26 +2,43 @@
 // Hero section para la página principal
 ---
 
-<section class="bg-cream py-16 md:py-24">
-  <div class="container mx-auto px-4">
-    <div class="max-w-3xl">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-        Productos <span class="text-primary">Naturales</span><br />
-        Para Tu Bienestar
+<section class="relative h-[600px] flex items-center">
+  <!-- Imagen de fondo -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1920&q=80"
+      alt="Comida saludable"
+      class="w-full h-full object-cover"
+    />
+    <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+  </div>
+
+  <!-- Contenido -->
+  <div class="container mx-auto px-4 relative z-10">
+    <div class="max-w-2xl">
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+        Platos Preparados
+        <span class="text-primary">Saludables</span>
       </h1>
-      <p class="text-xl md:text-2xl text-gray-600 mb-8">
+      <p class="text-2xl md:text-3xl text-gray-100 mb-6 font-medium">
         Nutrición real. Esfuerzo cero.
       </p>
-      <p class="text-lg text-gray-700 mb-8">
-        Descubre nuestra selección de productos ecológicos, superalimentos y snacks saludables.
-        Todo lo que necesitas para una alimentación equilibrada.
+      <p class="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
+        Comidas equilibradas listas para disfrutar. Diseñadas por nutricionistas,
+        preparadas con ingredientes frescos y entregadas en tu puerta.
       </p>
       <div class="flex flex-wrap gap-4">
-        <a href="/categoria/cereales" class="btn-primary btn-lg">
-          Explorar Productos
+        <a
+          href="/productos"
+          class="px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-leaf transition-all transform hover:scale-105 shadow-lg text-lg"
+        >
+          Ver Menú
         </a>
-        <a href="/contacto" class="btn-outline btn-lg">
-          Contactar
+        <a
+          href="/planificador"
+          class="px-8 py-4 bg-white text-primary font-bold rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg text-lg"
+        >
+          Planifica tu Semana
         </a>
       </div>
     </div>

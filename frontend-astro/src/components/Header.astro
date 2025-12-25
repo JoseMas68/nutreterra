@@ -18,19 +18,25 @@ const currentPath = Astro.url.pathname;
       <nav class="hidden md:flex items-center gap-8">
         <a
           href="/"
-          class={currentPath === '/' ? 'nav-link nav-link-active' : 'nav-link'}
+          class={`font-medium transition-colors ${currentPath === '/' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
         >
           Inicio
         </a>
         <a
-          href="/categoria/cereales"
-          class={currentPath.startsWith('/categoria') ? 'nav-link nav-link-active' : 'nav-link'}
+          href="/productos"
+          class={`font-medium transition-colors ${currentPath.startsWith('/producto') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
         >
-          Productos
+          Nuestros Productos
+        </a>
+        <a
+          href="/planificador"
+          class={`font-medium transition-colors ${currentPath === '/planificador' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+        >
+          Planifica tu Semana
         </a>
         <a
           href="/contacto"
-          class={currentPath === '/contacto' ? 'nav-link nav-link-active' : 'nav-link'}
+          class={`font-medium transition-colors ${currentPath === '/contacto' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
         >
           Contacto
         </a>

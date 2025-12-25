@@ -123,6 +123,12 @@ model Product {
   featured         Boolean  @default(false)
   active           Boolean  @default(true)
 
+  // Macros nutricionales
+  calories      Float? // Calorías (kcal)
+  protein       Float? // Proteínas (gramos)
+  carbohydrates Float? // Carbohidratos (gramos)
+  fat           Float? // Grasas (gramos)
+
   categoryId String
 
   createdAt DateTime @default(now())

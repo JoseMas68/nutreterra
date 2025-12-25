@@ -6,10 +6,7 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   integrations: [
     react(),
-    tailwind({
-      // Tailwind ya está configurado en tailwind.config.js
-      applyBaseStyles: false, // Usamos nuestro global.css
-    }),
+    tailwind(),
   ],
   output: 'static', // Generación estática (por defecto)
   server: {
