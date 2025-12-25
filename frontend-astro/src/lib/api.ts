@@ -122,7 +122,7 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 // Obtener todas las líneas de producto
 export async function getProductLines(): Promise<ProductLine[]> {
   try {
-    const response = await fetch(`${API_URL}/admin/product-lines`);
+    const response = await fetch(`${API_URL}/product-lines`);
     if (!response.ok) {
       throw new Error(`Error fetching product lines: ${response.statusText}`);
     }
