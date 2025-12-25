@@ -7,13 +7,16 @@ import Hero from '@/components/Hero.astro';
 import ProductCard from '@/components/ProductCard.astro';
 import CategoryCard from '@/components/CategoryCard.astro';
 
-import { getProducts, getCategories } from '@/lib/api';
+import { getProducts, getCategories, getProductLines } from '@/lib/api';
 
 // Obtener productos destacados desde la API
 const featuredProducts = await getProducts({ featured: true, limit: 8 });
 
 // Obtener categorías desde la API
 const categories = await getCategories();
+
+// Obtener líneas de producto activas
+const productLines = (await getProductLines()).filter(line => line.active);
 ---
 
 <Layout title="NutreTerra - Productos Naturales y Saludables">
@@ -50,8 +53,69 @@ const categories = await getCategories();
     </div>
   </section>
 
-  <!-- Categorías -->
+  <!-- Líneas de Producto (Masonry Grid) -->
   <section class="section section-cream">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Nuestras <span class="text-primary">Líneas de Producto</span>
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Explora nuestras colecciones especializadas diseñadas para diferentes estilos de vida.
+        </p>
+      </div>
+
+      <!-- Masonry Grid -->
+      <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+        {productLines.map((line, index) => (
+          <a
+            href={`/linea/${line.slug}`}
+            class="block break-inside-avoid bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
+            style={`margin-bottom: ${index % 3 === 0 ? '1.5rem' : index % 3 === 1 ? '2.5rem' : '2rem'}`}
+          >
+            <div class="p-8">
+              <!-- Icono -->
+              <div
+                class="w-16 h-16 mb-4 text-primary group-hover:scale-110 transition-transform duration-300"
+                set:html={line.icon}
+              />
+
+              <!-- Nombre -->
+              <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
+                {line.name}
+              </h3>
+
+              <!-- Descripción -->
+              <p class="text-gray-600 mb-4 leading-relaxed">
+                {line.description}
+              </p>
+
+              <!-- Contador de productos -->
+              {line.productCount && line.productCount > 0 && (
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                  </svg>
+                  <span>{line.productCount} productos</span>
+                </div>
+              )}
+
+              <!-- Link -->
+              <div class="mt-4 flex items-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all">
+                <span>Explorar línea</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Categorías -->
+  <section class="section">
     <div class="container mx-auto px-4">
       <div class="text-center mb-12">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">

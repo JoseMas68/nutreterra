@@ -36,6 +36,17 @@ export interface Category {
   productCount?: number;
 }
 
+export interface ProductLine {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  icon: string;
+  order: number;
+  active: boolean;
+  productCount?: number;
+}
+
 // Obtener todos los productos
 export async function getProducts(params?: {
   category?: string;
@@ -104,6 +115,35 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
     return await response.json();
   } catch (error) {
     console.error(`Error fetching category ${slug}:`, error);
+    return null;
+  }
+}
+
+// Obtener todas las líneas de producto
+export async function getProductLines(): Promise<ProductLine[]> {
+  try {
+    const response = await fetch(`${API_URL}/admin/product-lines`);
+    if (!response.ok) {
+      throw new Error(`Error fetching product lines: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data.map((line: any) => ({
+      ...line,
+      productCount: line._count?.products || 0
+    }));
+  } catch (error) {
+    console.error('Error fetching product lines:', error);
+    return [];
+  }
+}
+
+// Obtener una línea de producto por slug
+export async function getProductLineBySlug(slug: string): Promise<ProductLine | null> {
+  try {
+    const lines = await getProductLines();
+    return lines.find(line => line.slug === slug) || null;
+  } catch (error) {
+    console.error(`Error fetching product line ${slug}:`, error);
     return null;
   }
 }
