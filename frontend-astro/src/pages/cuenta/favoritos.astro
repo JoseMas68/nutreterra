@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import ProtectedRoute from '@/islands/ProtectedRoute';
+import FavoritesList from '@/islands/FavoritesList';
 ---
 
 <Layout title="Mis Favoritos - NutreTerra">
@@ -24,8 +25,28 @@ import ProtectedRoute from '@/islands/ProtectedRoute';
           <p class="text-gray-600">Productos que has guardado para más tarde</p>
         </div>
 
-        <!-- Estado vacío -->
-        <div class="max-w-2xl mx-auto">
+        <!-- Lista de Favoritos -->
+        <FavoritesList client:load />
+
+        <!-- Información sobre favoritos (Movida abajo) -->
+        <div class="max-w-2xl mx-auto mt-8">
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <div class="flex gap-3">
+              <svg class="w-6 h-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h3 class="font-semibold text-blue-900 mb-1">¿Cómo guardar favoritos?</h3>
+                <p class="text-sm text-blue-800">
+                  Cuando visites un producto que te guste, haz clic en el icono del corazón para agregarlo a tus favoritos. Podrás acceder a ellos en cualquier momento desde esta página.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado vacío (código original comentado por ahora) -->
+        <div style="display: none;" class="max-w-2xl mx-auto">
           <div class="bg-white rounded-2xl shadow-xl p-12 border border-gray-100 text-center">
             <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
               <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
