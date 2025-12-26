@@ -1,5 +1,5 @@
 // Servicio para conectar con la API del backend
-const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.PUBLIC_API_URL || (typeof window === 'undefined' ? 'https://nutreterra-server-uhv2kerbo-josemas68s-projects.vercel.app' : 'http://localhost:3001');
 
 export interface Product {
   id: string;
