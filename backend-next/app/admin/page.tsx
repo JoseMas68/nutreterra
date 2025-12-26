@@ -1,5 +1,9 @@
 import { prisma } from '@/lib/prisma';
 
+// Forzar renderizado dinámico
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getStats() {
   const [
     totalProducts,
