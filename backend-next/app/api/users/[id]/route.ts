@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requireOwnerOrAdmin, requireAdmin } from '@/lib/auth-middleware';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
+
+const updateUserSchema = z.object({
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres').optional(),
+  email: z.string().email('Email inválido').optional(),
+  role: z.enum(['CUSTOMER', 'ADMIN']).optional(),
+});
 
 // GET - Obtener información del usuario
 export async function GET(
@@ -9,10 +17,24 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json(
+        { error: 'No autorizado' },
+        { status: 401 }
+      );
+    }
+
     const userId = params.id;
 
-    // Verificar autenticación y permisos
-    requireOwnerOrAdmin(request, userId);
+    // Verificar que el usuario tiene permiso (admin o dueño del recurso)
+    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'No tienes permiso para acceder a este recurso' },
+        { status: 403 }
+      );
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -25,7 +47,6 @@ export async function GET(
         emailVerified: true,
         createdAt: true,
         updatedAt: true,
-        // No incluir password por seguridad
       },
     });
 
@@ -38,13 +59,6 @@ export async function GET(
 
     return NextResponse.json(user);
   } catch (error: any) {
-    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.message === 'No autorizado' ? 401 : 403 }
-      );
-    }
-
     console.error('Error al obtener usuario:', error);
     return NextResponse.json(
       { error: 'Error al obtener la información del usuario' },
@@ -59,13 +73,50 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json(
+        { error: 'No autorizado' },
+        { status: 401 }
+      );
+    }
+
     const userId = params.id;
 
-    // Verificar autenticación y permisos
-    requireOwnerOrAdmin(request, userId);
+    // Verificar que el usuario tiene permiso (admin o dueño del recurso)
+    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'No tienes permiso para acceder a este recurso' },
+        { status: 403 }
+      );
+    }
 
     const body = await request.json();
-    const { name, email, currentPassword, newPassword, image } = body;
+
+    // Admins pueden actualizar role, nombre y email
+    // Usuarios normales solo pueden actualizar su nombre, email y contraseña
+    let updateData: any = {};
+
+    if (session.user.role === 'ADMIN') {
+      // Admin puede actualizar todo mediante updateUserSchema
+      const validation = updateUserSchema.safeParse(body);
+      if (validation.success) {
+        updateData = validation.data;
+      } else {
+        // Si no pasa el schema de admin, usar los campos básicos
+        const { name, email, currentPassword, newPassword, image } = body;
+        if (name !== undefined) updateData.name = name;
+        if (email !== undefined) updateData.email = email;
+        if (image !== undefined) updateData.image = image;
+      }
+    } else {
+      // Usuario normal solo puede actualizar campos básicos
+      const { name, email, currentPassword, newPassword, image } = body;
+      if (name !== undefined) updateData.name = name;
+      if (email !== undefined) updateData.email = email;
+      if (image !== undefined) updateData.image = image;
+    }
 
     // Verificar que el usuario existe
     const existingUser = await prisma.user.findUnique({
@@ -80,9 +131,9 @@ export async function PUT(
     }
 
     // Si se intenta cambiar el email, verificar que no esté en uso
-    if (email && email !== existingUser.email) {
+    if (updateData.email && updateData.email !== existingUser.email) {
       const emailExists = await prisma.user.findUnique({
-        where: { email },
+        where: { email: updateData.email },
       });
 
       if (emailExists) {
@@ -93,17 +144,10 @@ export async function PUT(
       }
     }
 
-    // Preparar datos para actualizar
-    const updateData: any = {};
-
-    if (name !== undefined) updateData.name = name;
-    if (email !== undefined) updateData.email = email;
-    if (image !== undefined) updateData.image = image;
-
-    // Si se quiere cambiar la contraseña
-    if (newPassword) {
+    // Si se quiere cambiar la contraseña (solo para usuarios normales actualizando su propia cuenta)
+    if (body.newPassword && session.user.id === userId) {
       // Verificar que se proporcionó la contraseña actual
-      if (!currentPassword) {
+      if (!body.currentPassword) {
         return NextResponse.json(
           { error: 'Debes proporcionar la contraseña actual para cambiarla' },
           { status: 400 }
@@ -112,7 +156,7 @@ export async function PUT(
 
       // Verificar que la contraseña actual sea correcta
       const isPasswordValid = await bcrypt.compare(
-        currentPassword,
+        body.currentPassword,
         existingUser.password
       );
 
@@ -124,7 +168,7 @@ export async function PUT(
       }
 
       // Validar que la nueva contraseña tenga al menos 6 caracteres
-      if (newPassword.length < 6) {
+      if (body.newPassword.length < 6) {
         return NextResponse.json(
           { error: 'La nueva contraseña debe tener al menos 6 caracteres' },
           { status: 400 }
@@ -132,7 +176,7 @@ export async function PUT(
       }
 
       // Hash de la nueva contraseña
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const hashedPassword = await bcrypt.hash(body.newPassword, 10);
       updateData.password = hashedPassword;
     }
 
@@ -157,13 +201,6 @@ export async function PUT(
       user: updatedUser,
     });
   } catch (error: any) {
-    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.message === 'No autorizado' ? 401 : 403 }
-      );
-    }
-
     console.error('Error al actualizar usuario:', error);
     return NextResponse.json(
       { error: 'Error al actualizar la información del usuario' },
@@ -178,12 +215,18 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Solo admin puede eliminar usuarios
-    requireAdmin(request);
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'No tienes permiso para realizar esta acción' },
+        { status: 403 }
+      );
+    }
 
     const userId = params.id;
 
-    // Verificar que el usuario existe
+    // Verificar que el usuario exists
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
@@ -204,13 +247,6 @@ export async function DELETE(
       message: 'Usuario eliminado correctamente',
     });
   } catch (error: any) {
-    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.message === 'No autorizado' ? 401 : 403 }
-      );
-    }
-
     console.error('Error al eliminar usuario:', error);
     return NextResponse.json(
       { error: 'Error al eliminar el usuario' },

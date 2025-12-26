@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import ProductCard from './ProductCard';
 
 interface Product {
   id: string;
@@ -247,58 +248,17 @@ export default function ProductCatalog({ apiUrl }: { apiUrl: string }) {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
-            <a
+            <ProductCard
               key={product.id}
-              href={`/producto/${product.slug}`}
-              className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full"
-            >
-              <div className="relative overflow-hidden aspect-square">
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                {product.compareAtPrice && (
-                  <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                    OFERTA
-                  </div>
-                )}
-                {product.productLine && (
-                  <div className="absolute top-2 left-2 bg-primary/90 text-white text-xs font-semibold px-2 py-1 rounded-full backdrop-blur-sm">
-                    {product.productLine.name}
-                  </div>
-                )}
-              </div>
-              <div className="p-4 flex-1 flex flex-col">
-                <div className="mb-2">
-                  <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                    {product.category.name}
-                  </span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors">
-                  {product.name}
-                </h3>
-                {product.calories && (
-                  <p className="text-xs text-gray-500 mb-3">
-                    {product.calories} kcal • {product.protein}g proteína
-                  </p>
-                )}
-                <div className="mt-auto">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-lg md:text-xl font-bold text-primary">
-                      {product.price.toFixed(2)}€
-                    </span>
-                    {product.compareAtPrice && (
-                      <span className="text-sm text-gray-400 line-through">
-                        {product.compareAtPrice.toFixed(2)}€
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </a>
+              product={{
+                ...product,
+                shortDescription: product.category.name,
+                stock: 100, // TODO: obtener stock real de la BD
+                images: [product.imageUrl],
+              }}
+            />
           ))}
         </div>
       )}

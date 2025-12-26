@@ -39,20 +39,14 @@ export default function NewUserPage() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        throw new Error('No estás autenticado');
-      }
-
-      const parsedToken = JSON.parse(token);
-
       // Usar el endpoint de admin que crea el usuario con el rol correcto directamente
+      // NextAuth maneja la autenticación automáticamente mediante cookies de sesión
       const response = await fetch('/api/admin/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${parsedToken}`,
         },
+        credentials: 'include', // Incluir cookies de sesión
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,

@@ -39,23 +39,16 @@ export default function UsersPage() {
       if (search) params.append('search', search);
       if (roleFilter) params.append('role', roleFilter);
 
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        const parsedToken = JSON.parse(token);
+      const response = await fetch(`/api/users?${params.toString()}`, {
+        credentials: 'include', // Incluir cookies de sesión de NextAuth
+      });
 
-        const response = await fetch(`/api/users?${params.toString()}`, {
-          headers: {
-            'Authorization': `Bearer ${parsedToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Error al cargar usuarios');
-        }
-
-        const data = await response.json();
-        setUsers(data.users);
+      if (!response.ok) {
+        throw new Error('Error al cargar usuarios');
       }
+
+      const data = await response.json();
+      setUsers(data.users);
     } catch (err: any) {
       setError(err.message || 'Error al cargar usuarios');
       console.error(err);
@@ -70,16 +63,9 @@ export default function UsersPage() {
     }
 
     try {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-
-      const parsedToken = JSON.parse(token);
-
       const response = await fetch(`/api/users/${userId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${parsedToken}`,
-        },
+        credentials: 'include', // Incluir cookies de sesión de NextAuth
       });
 
       if (!response.ok) {

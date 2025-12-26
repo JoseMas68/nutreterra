@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAdmin } from '@/lib/auth-middleware';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -14,8 +15,15 @@ const createUserSchema = z.object({
 // POST - Crear usuario (solo admin)
 export async function POST(request: NextRequest) {
   try {
-    // Verificar que el usuario es admin
-    requireAdmin(request);
+    // Verificar que el usuario es admin usando NextAuth
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'No tienes permiso para realizar esta acción' },
+        { status: 403 }
+      );
+    }
 
     const body = await request.json();
     const { email, password, name, role } = createUserSchema.parse(body);
@@ -65,13 +73,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: error.errors[0].message },
         { status: 400 }
-      );
-    }
-
-    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.message === 'No autorizado' ? 401 : 403 }
       );
     }
 

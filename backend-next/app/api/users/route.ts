@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAdmin } from '@/lib/auth-middleware';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 // GET - Listar usuarios (solo admin)
 export async function GET(request: NextRequest) {
   try {
     // Solo admin puede listar todos los usuarios
-    requireAdmin(request);
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'No tienes permiso para realizar esta acción' },
+        { status: 403 }
+      );
+    }
 
     // Obtener parámetros de búsqueda
     const { searchParams } = new URL(request.url);
@@ -69,13 +77,6 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.message === 'No autorizado' ? 401 : 403 }
-      );
-    }
-
     console.error('Error al obtener usuarios:', error);
     return NextResponse.json(
       { error: 'Error al obtener la lista de usuarios' },

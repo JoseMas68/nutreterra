@@ -50,19 +50,9 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
       setLoading(true);
       setError(null);
 
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        router.push('/login');
-        return;
-      }
-
-      const parsedToken = JSON.parse(token);
-
       // Cargar usuario
       const userResponse = await fetch(`/api/users/${params.id}`, {
-        headers: {
-          'Authorization': `Bearer ${parsedToken}`,
-        },
+        credentials: 'include', // Incluir cookies de sesión de NextAuth
       });
 
       if (!userResponse.ok) {
@@ -79,9 +69,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
 
       // Cargar direcciones
       const addressResponse = await fetch(`/api/users/${params.id}/addresses`, {
-        headers: {
-          'Authorization': `Bearer ${parsedToken}`,
-        },
+        credentials: 'include', // Incluir cookies de sesión de NextAuth
       });
 
       if (addressResponse.ok) {
@@ -100,17 +88,12 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-
-      const parsedToken = JSON.parse(token);
-
       const response = await fetch(`/api/users/${params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${parsedToken}`,
         },
+        credentials: 'include', // Incluir cookies de sesión de NextAuth
         body: JSON.stringify(formData),
       });
 

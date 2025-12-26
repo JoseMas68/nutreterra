@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import bcrypt from 'bcrypt';
+import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { generateToken } from '@/lib/jwt';
 

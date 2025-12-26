@@ -3,56 +3,15 @@ import Layout from '@/layouts/Layout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import ProtectedRoute from '@/islands/ProtectedRoute';
+import OrderDetails from '@/islands/OrderDetails';
 
-// Datos de ejemplo - en producción vendría de la API
+// Deshabilitar prerenderizado para usar SSR (Server-Side Rendering)
+export const prerender = false;
+
 const { id } = Astro.params;
-
-// Simulación de datos del pedido
-const order = {
-  id: id,
-  orderNumber: `NT-2025-${id?.padStart(3, '0')}`,
-  date: '2025-01-15',
-  status: 'DELIVERED',
-  total: 45.80,
-  subtotal: 42.00,
-  shipping: 3.80,
-  shippingAddress: {
-    name: 'Juan Pérez',
-    street: 'Calle Principal 123',
-    city: 'Madrid',
-    postalCode: '28001',
-    phone: '+34 600 000 000',
-  },
-  items: [
-    {
-      id: '1',
-      name: 'Pollo al Curry con Arroz Integral',
-      quantity: 2,
-      price: 12.50,
-      imageUrl: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&q=80',
-    },
-    {
-      id: '2',
-      name: 'Ensalada de Quinoa y Aguacate',
-      quantity: 3,
-      price: 9.00,
-      imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80',
-    },
-  ],
-};
-
-const statusLabels = {
-  PENDING: { text: 'Pendiente', class: 'bg-yellow-100 text-yellow-800', icon: '⏳' },
-  PROCESSING: { text: 'Procesando', class: 'bg-blue-100 text-blue-800', icon: '⚙️' },
-  SHIPPED: { text: 'Enviado', class: 'bg-purple-100 text-purple-800', icon: '📦' },
-  DELIVERED: { text: 'Entregado', class: 'bg-green-100 text-green-800', icon: '✓' },
-  CANCELLED: { text: 'Cancelado', class: 'bg-red-100 text-red-800', icon: '✗' },
-};
-
-const statusInfo = statusLabels[order.status as keyof typeof statusLabels];
 ---
 
-<Layout title={`Pedido ${order.orderNumber} - NutreTerra`}>
+<Layout title="Detalles del Pedido - NutreTerra">
   <Header />
 
   <main class="min-h-screen bg-gradient-to-b from-white to-primary/5 py-16">
@@ -65,131 +24,8 @@ const statusInfo = statusLabels[order.status as keyof typeof statusLabels];
           </a>
         </div>
 
-        <!-- Título y Estado -->
-        <div class="mb-8">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-            <div>
-              <h1 class="text-4xl font-bold text-gray-900 mb-2">
-                Pedido #{order.orderNumber}
-              </h1>
-              <p class="text-gray-600">
-                Realizado el {new Date(order.date).toLocaleDateString('es-ES', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </p>
-            </div>
-            <span class={`px-6 py-3 rounded-xl text-lg font-bold ${statusInfo.class} flex items-center gap-2 w-fit`}>
-              <span class="text-2xl">{statusInfo.icon}</span>
-              {statusInfo.text}
-            </span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <!-- Columna Principal - Productos -->
-          <div class="lg:col-span-2">
-            <!-- Productos del Pedido -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 mb-8">
-              <h2 class="text-2xl font-bold text-gray-900 mb-6">Productos</h2>
-
-              <div class="space-y-4">
-                {order.items.map((item) => (
-                  <div class="flex gap-4 pb-4 border-b border-gray-200 last:border-0">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.name}
-                      class="w-24 h-24 object-cover rounded-lg"
-                    />
-                    <div class="flex-1">
-                      <h3 class="font-bold text-lg text-gray-900 mb-1">{item.name}</h3>
-                      <p class="text-gray-600 text-sm mb-2">Cantidad: {item.quantity}</p>
-                      <p class="text-primary font-bold text-lg">
-                        {(item.price * item.quantity).toFixed(2)}€
-                        <span class="text-gray-500 font-normal text-sm ml-2">
-                          ({item.price.toFixed(2)}€ c/u)
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <!-- Información de Envío -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-              <h2 class="text-2xl font-bold text-gray-900 mb-6">Dirección de Envío</h2>
-
-              <div class="space-y-2 text-gray-700">
-                <p class="font-bold text-gray-900">{order.shippingAddress.name}</p>
-                <p>{order.shippingAddress.street}</p>
-                <p>{order.shippingAddress.postalCode}, {order.shippingAddress.city}</p>
-                <p class="text-sm text-gray-600 pt-2">{order.shippingAddress.phone}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Columna Lateral - Resumen -->
-          <div class="lg:col-span-1">
-            <!-- Resumen del Pedido -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 sticky top-24">
-              <h2 class="text-2xl font-bold text-gray-900 mb-6">Resumen</h2>
-
-              <div class="space-y-4 mb-6">
-                <div class="flex justify-between text-gray-700">
-                  <span>Subtotal:</span>
-                  <span class="font-semibold">{order.subtotal.toFixed(2)}€</span>
-                </div>
-                <div class="flex justify-between text-gray-700">
-                  <span>Envío:</span>
-                  <span class="font-semibold">{order.shipping.toFixed(2)}€</span>
-                </div>
-                <div class="border-t border-gray-200 pt-4 flex justify-between text-xl font-bold text-gray-900">
-                  <span>Total:</span>
-                  <span class="text-primary">{order.total.toFixed(2)}€</span>
-                </div>
-              </div>
-
-              <!-- Acciones -->
-              <div class="space-y-3">
-                {order.status === 'DELIVERED' && (
-                  <button
-                    onclick="alert('Funcionalidad en desarrollo')"
-                    class="w-full px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-leaf transition-colors"
-                  >
-                    Repetir Pedido
-                  </button>
-                )}
-                <button
-                  onclick="window.print()"
-                  class="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-colors"
-                >
-                  Imprimir Pedido
-                </button>
-                {order.status !== 'DELIVERED' && order.status !== 'CANCELLED' && (
-                  <button
-                    onclick="alert('Para cancelar tu pedido, contacta con soporte')"
-                    class="w-full px-6 py-3 border-2 border-red-300 text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors"
-                  >
-                    Solicitar Cancelación
-                  </button>
-                )}
-              </div>
-
-              <!-- Ayuda -->
-              <div class="mt-6 pt-6 border-t border-gray-200">
-                <p class="text-sm text-gray-600 mb-3">¿Necesitas ayuda con tu pedido?</p>
-                <a
-                  href="/contacto"
-                  class="text-primary hover:text-leaf font-semibold text-sm transition-colors"
-                >
-                  Contactar con Soporte →
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- Componente de detalles del pedido -->
+        <OrderDetails orderId={id || ''} client:load />
       </div>
     </ProtectedRoute>
   </main>
