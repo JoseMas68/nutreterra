@@ -39,15 +39,25 @@ export default function NewUserPage() {
     try {
       setLoading(true);
 
-      const response = await fetch('/api/auth/register', {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        throw new Error('No estás autenticado');
+      }
+
+      const parsedToken = JSON.parse(token);
+
+      // Usar el endpoint de admin que crea el usuario con el rol correcto directamente
+      const response = await fetch('/api/admin/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${parsedToken}`,
         },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          role: formData.role,
         }),
       });
 
@@ -57,26 +67,11 @@ export default function NewUserPage() {
       }
 
       const data = await response.json();
-
-      // Si necesitamos cambiar el rol a ADMIN, hacer una actualización adicional
-      if (formData.role === 'ADMIN') {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-          const parsedToken = JSON.parse(token);
-
-          await fetch(`/api/users/${data.user.id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${parsedToken}`,
-            },
-            body: JSON.stringify({ role: 'ADMIN' }),
-          });
-        }
-      }
+      console.log('Usuario creado:', data);
 
       alert('Usuario creado correctamente');
-      router.push('/admin/users');
+      // Redirigir y forzar recarga de la página
+      window.location.href = '/admin/users';
     } catch (err: any) {
       setError(err.message || 'Error al crear usuario');
       console.error(err);
