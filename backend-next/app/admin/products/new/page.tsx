@@ -1,6 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import ProductForm from '../ProductForm';
 
+// Forzar renderizado dinámico
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getFormData() {
   const [categories, tags] = await Promise.all([
     prisma.category.findMany({

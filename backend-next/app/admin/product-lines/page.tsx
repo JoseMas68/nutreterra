@@ -1,6 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 
+// Forzar renderizado dinámico
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getProductLines() {
   return await prisma.productLine.findMany({
     include: {

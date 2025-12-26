@@ -2,6 +2,10 @@ import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
+// Forzar renderizado dinámico
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getOrder(id: string) {
   const order = await prisma.order.findUnique({
     where: { id },

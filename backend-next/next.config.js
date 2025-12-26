@@ -12,6 +12,11 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
+  // Evitar pre-renderizado durante el build
+  // Esto asegura que las páginas del admin no hagan queries durante el build
+  outputFileTracingIncludes: {
+    '/admin/**': [],
+  },
 };
 
 export default nextConfig;

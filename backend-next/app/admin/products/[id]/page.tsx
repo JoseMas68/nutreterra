@@ -2,6 +2,10 @@ import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import ProductForm from '../ProductForm';
 
+// Forzar renderizado dinámico
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getProductData(id: string) {
   const [product, categories, tags] = await Promise.all([
     prisma.product.findUnique({
