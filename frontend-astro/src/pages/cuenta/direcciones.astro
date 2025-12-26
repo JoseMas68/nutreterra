@@ -4,7 +4,7 @@ import Layout from '@/layouts/Layout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import ProtectedRoute from '@/islands/ProtectedRoute';
-import AddressManager from '@/islands/AddressManager';
+import AddressManagerAPI from '@/islands/AddressManagerAPI';
 ---
 
 <Layout title="Mis Direcciones - NutreTerra" description="Gestiona tus direcciones de envío">
@@ -61,7 +61,7 @@ import AddressManager from '@/islands/AddressManager';
 
         <!-- Contenido principal -->
         <div class="lg:col-span-3">
-          <AddressManager client:load />
+          <AddressManagerAPI client:load />
         </div>
       </div>
     </div>
