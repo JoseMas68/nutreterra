@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { requireOwnerOrAdmin } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
 
 // PUT - Actualizar dirección
@@ -9,24 +8,10 @@ export async function PUT(
   { params }: { params: { id: string; addressId: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
-
     const { id: userId, addressId } = params;
 
-    // Solo el propio usuario o un admin pueden actualizar direcciones
-    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para realizar esta acción' },
-        { status: 403 }
-      );
-    }
+    // Verificar autenticación y permisos
+    requireOwnerOrAdmin(request, userId);
 
     // Verificar que la dirección existe y pertenece al usuario
     const existingAddress = await prisma.address.findFirst({
@@ -88,7 +73,14 @@ export async function PUT(
       message: 'Dirección actualizada correctamente',
       address: updatedAddress,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.message === 'No autorizado' ? 401 : 403 }
+      );
+    }
+
     console.error('Error al actualizar dirección:', error);
     return NextResponse.json(
       { error: 'Error al actualizar la dirección' },
@@ -103,24 +95,10 @@ export async function DELETE(
   { params }: { params: { id: string; addressId: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
-
     const { id: userId, addressId } = params;
 
-    // Solo el propio usuario o un admin pueden eliminar direcciones
-    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para realizar esta acción' },
-        { status: 403 }
-      );
-    }
+    // Verificar autenticación y permisos
+    requireOwnerOrAdmin(request, userId);
 
     // Verificar que la dirección existe y pertenece al usuario
     const existingAddress = await prisma.address.findFirst({
@@ -160,7 +138,14 @@ export async function DELETE(
     return NextResponse.json({
       message: 'Dirección eliminada correctamente',
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.message === 'No autorizado' ? 401 : 403 }
+      );
+    }
+
     console.error('Error al eliminar dirección:', error);
     return NextResponse.json(
       { error: 'Error al eliminar la dirección' },

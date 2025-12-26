@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { requireOwnerOrAdmin, requireAdmin } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 
@@ -10,24 +9,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
-
     const userId = params.id;
 
-    // Solo el propio usuario o un admin pueden ver la información
-    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para acceder a esta información' },
-        { status: 403 }
-      );
-    }
+    // Verificar autenticación y permisos
+    requireOwnerOrAdmin(request, userId);
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -52,7 +37,14 @@ export async function GET(
     }
 
     return NextResponse.json(user);
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.message === 'No autorizado' ? 401 : 403 }
+      );
+    }
+
     console.error('Error al obtener usuario:', error);
     return NextResponse.json(
       { error: 'Error al obtener la información del usuario' },
@@ -67,24 +59,10 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
-
     const userId = params.id;
 
-    // Solo el propio usuario o un admin pueden actualizar la información
-    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para actualizar esta información' },
-        { status: 403 }
-      );
-    }
+    // Verificar autenticación y permisos
+    requireOwnerOrAdmin(request, userId);
 
     const body = await request.json();
     const { name, email, currentPassword, newPassword, image } = body;
@@ -178,7 +156,14 @@ export async function PUT(
       message: 'Usuario actualizado correctamente',
       user: updatedUser,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.message === 'No autorizado' ? 401 : 403 }
+      );
+    }
+
     console.error('Error al actualizar usuario:', error);
     return NextResponse.json(
       { error: 'Error al actualizar la información del usuario' },
@@ -193,22 +178,8 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
-
     // Solo admin puede eliminar usuarios
-    if (session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para eliminar usuarios' },
-        { status: 403 }
-      );
-    }
+    requireAdmin(request);
 
     const userId = params.id;
 
@@ -232,7 +203,14 @@ export async function DELETE(
     return NextResponse.json({
       message: 'Usuario eliminado correctamente',
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.message === 'No autorizado' ? 401 : 403 }
+      );
+    }
+
     console.error('Error al eliminar usuario:', error);
     return NextResponse.json(
       { error: 'Error al eliminar el usuario' },

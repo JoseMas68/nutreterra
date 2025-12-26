@@ -47,13 +47,42 @@ const getBackendUrl = () => {
   return import.meta.env.PUBLIC_API_URL || import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3001';
 };
 
+// Obtener el token de autenticación
+const getAuthToken = (): string | null => {
+  // Intentar obtener el token de localStorage
+  try {
+    const tokenData = localStorage.getItem('authToken');
+    if (tokenData) {
+      return JSON.parse(tokenData);
+    }
+  } catch (error) {
+    console.error('Error al obtener token:', error);
+  }
+  return null;
+};
+
+// Obtener headers con autenticación
+const getAuthHeaders = (): HeadersInit => {
+  const token = getAuthToken();
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return headers;
+};
+
 /**
  * Obtener todas las direcciones del usuario
  */
 export async function getUserAddresses(userId: string): Promise<Address[]> {
   try {
     const response = await fetch(`${getBackendUrl()}/api/users/${userId}/addresses`, {
-      credentials: 'include', // Importante para enviar cookies de sesión
+      headers: getAuthHeaders(),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -78,9 +107,7 @@ export async function createAddress(
   try {
     const response = await fetch(`${getBackendUrl()}/api/users/${userId}/addresses`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
       body: JSON.stringify(addressData),
     });
@@ -111,9 +138,7 @@ export async function updateAddress(
       `${getBackendUrl()}/api/users/${userId}/addresses/${addressId}`,
       {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         credentials: 'include',
         body: JSON.stringify(addressData),
       }
@@ -141,6 +166,7 @@ export async function deleteAddress(userId: string, addressId: string): Promise<
       `${getBackendUrl()}/api/users/${userId}/addresses/${addressId}`,
       {
         method: 'DELETE',
+        headers: getAuthHeaders(),
         credentials: 'include',
       }
     );

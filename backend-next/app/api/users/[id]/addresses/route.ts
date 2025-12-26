@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { requireOwnerOrAdmin } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
 
 // GET - Obtener todas las direcciones del usuario
@@ -9,24 +8,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
-
     const userId = params.id;
 
-    // Solo el propio usuario o un admin pueden ver las direcciones
-    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para acceder a esta información' },
-        { status: 403 }
-      );
-    }
+    // Verificar autenticación y permisos
+    requireOwnerOrAdmin(request, userId);
 
     const addresses = await prisma.address.findMany({
       where: { userId },
@@ -37,7 +22,14 @@ export async function GET(
     });
 
     return NextResponse.json({ addresses });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.message === 'No autorizado' ? 401 : 403 }
+      );
+    }
+
     console.error('Error al obtener direcciones:', error);
     return NextResponse.json(
       { error: 'Error al obtener las direcciones' },
@@ -52,24 +44,10 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
-
     const userId = params.id;
 
-    // Solo el propio usuario o un admin pueden crear direcciones
-    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para realizar esta acción' },
-        { status: 403 }
-      );
-    }
+    // Verificar autenticación y permisos
+    requireOwnerOrAdmin(request, userId);
 
     const body = await request.json();
     const {
@@ -124,7 +102,14 @@ export async function POST(
       message: 'Dirección creada correctamente',
       address: newAddress,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'No autorizado' || error.message.includes('permiso')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.message === 'No autorizado' ? 401 : 403 }
+      );
+    }
+
     console.error('Error al crear dirección:', error);
     return NextResponse.json(
       { error: 'Error al crear la dirección' },
