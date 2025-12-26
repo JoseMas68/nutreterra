@@ -4,11 +4,12 @@ import { prisma } from '@/lib/prisma';
 // GET /api/menus/[id] - Obtener un menú específico
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const menu = await prisma.menu.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         user: {
           select: {
@@ -59,21 +60,22 @@ export async function GET(
 // PUT /api/menus/[id] - Actualizar un menú
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await req.json();
     const { name, description, isTemplate, isPublic, startDate, endDate, items } = body;
 
     // Si se proporcionan items, eliminamos los existentes y creamos los nuevos
     if (items) {
       await prisma.menuItem.deleteMany({
-        where: { menuId: params.id },
+        where: { menuId: id },
       });
     }
 
     const menu = await prisma.menu.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         description,
@@ -121,11 +123,12 @@ export async function PUT(
 // DELETE /api/menus/[id] - Eliminar un menú
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.menu.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Menú eliminado correctamente' });

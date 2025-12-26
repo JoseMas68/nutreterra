@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 // GET - Obtener detalles de un pedido específico
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = getAuthUser(request);
@@ -17,9 +17,11 @@ export async function GET(
       );
     }
 
+    const { id } = await params;
+
     const order = await prisma.order.findUnique({
       where: {
-        id: params.id,
+        id,
       },
       include: {
         items: {
@@ -74,7 +76,7 @@ export async function GET(
 // PUT - Actualizar estado del pedido (solo admin)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = getAuthUser(request);
@@ -86,11 +88,12 @@ export async function PUT(
       );
     }
 
+    const { id } = await params;
     const body = await request.json();
     const { status, paymentStatus } = body;
 
     const order = await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(status && { status }),
         ...(paymentStatus && { paymentStatus }),

@@ -5,10 +5,11 @@ import { prisma } from '@/lib/prisma';
 // GET - Obtener todas las direcciones del usuario
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = params.id;
+    const { id } = await params;
+    const userId = id;
 
     // Verificar autenticación y permisos
     requireOwnerOrAdmin(request, userId);
@@ -41,10 +42,11 @@ export async function GET(
 // POST - Crear nueva dirección
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = params.id;
+    const { id } = await params;
+    const userId = id;
 
     // Verificar autenticación y permisos
     requireOwnerOrAdmin(request, userId);

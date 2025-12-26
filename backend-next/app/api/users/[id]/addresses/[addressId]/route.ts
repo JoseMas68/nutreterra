@@ -5,10 +5,10 @@ import { prisma } from '@/lib/prisma';
 // PUT - Actualizar dirección
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string; addressId: string } }
+  { params }: { params: Promise<{ id: string; addressId: string }> }
 ) {
   try {
-    const { id: userId, addressId } = params;
+    const { id: userId, addressId } = await params;
 
     // Verificar autenticación y permisos
     requireOwnerOrAdmin(request, userId);
@@ -92,10 +92,10 @@ export async function PUT(
 // DELETE - Eliminar dirección
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; addressId: string } }
+  { params }: { params: Promise<{ id: string; addressId: string }> }
 ) {
   try {
-    const { id: userId, addressId } = params;
+    const { id: userId, addressId } = await params;
 
     // Verificar autenticación y permisos
     requireOwnerOrAdmin(request, userId);

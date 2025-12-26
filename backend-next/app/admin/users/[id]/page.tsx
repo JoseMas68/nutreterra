@@ -28,13 +28,14 @@ interface Address {
   isDefault: boolean;
 }
 
-export default function UserDetailPage({ params }: { params: { id: string } }) {
+export default function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -42,16 +43,22 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
   });
 
   useEffect(() => {
-    loadUserData();
-  }, [params.id]);
+    params.then(p => setUserId(p.id));
+  }, [params]);
+
+  useEffect(() => {
+    if (userId) loadUserData();
+  }, [userId]);
 
   const loadUserData = async () => {
     try {
       setLoading(true);
       setError(null);
 
+      if (!userId) return;
+
       // Cargar usuario
-      const userResponse = await fetch(`/api/users/${params.id}`, {
+      const userResponse = await fetch(`/api/users/${userId}`, {
         credentials: 'include', // Incluir cookies de sesión de NextAuth
       });
 
@@ -68,7 +75,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
       });
 
       // Cargar direcciones
-      const addressResponse = await fetch(`/api/users/${params.id}/addresses`, {
+      const addressResponse = await fetch(`/api/users/${userId}/addresses`, {
         credentials: 'include', // Incluir cookies de sesión de NextAuth
       });
 
@@ -87,8 +94,10 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!userId) return;
+
     try {
-      const response = await fetch(`/api/users/${params.id}`, {
+      const response = await fetch(`/api/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

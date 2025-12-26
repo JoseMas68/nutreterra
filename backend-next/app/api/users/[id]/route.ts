@@ -14,7 +14,7 @@ const updateUserSchema = z.object({
 // GET - Obtener información del usuario
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -26,7 +26,8 @@ export async function GET(
       );
     }
 
-    const userId = params.id;
+    const { id } = await params;
+    const userId = id;
 
     // Verificar que el usuario tiene permiso (admin o dueño del recurso)
     if (session.user.id !== userId && session.user.role !== 'ADMIN') {
@@ -70,7 +71,7 @@ export async function GET(
 // PUT - Actualizar información del usuario
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -82,7 +83,8 @@ export async function PUT(
       );
     }
 
-    const userId = params.id;
+    const { id } = await params;
+    const userId = id;
 
     // Verificar que el usuario tiene permiso (admin o dueño del recurso)
     if (session.user.id !== userId && session.user.role !== 'ADMIN') {
@@ -212,7 +214,7 @@ export async function PUT(
 // DELETE - Eliminar usuario (solo admin)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -224,7 +226,8 @@ export async function DELETE(
       );
     }
 
-    const userId = params.id;
+    const { id } = await params;
+    const userId = id;
 
     // Verificar que el usuario exists
     const user = await prisma.user.findUnique({
