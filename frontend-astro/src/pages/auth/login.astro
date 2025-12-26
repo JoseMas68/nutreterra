@@ -1,0 +1,58 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import LoginForm from '@/islands/LoginForm';
+---
+
+<Layout title="Iniciar Sesión - NutreTerra">
+  <Header />
+
+  <main class="min-h-screen bg-gradient-to-b from-white to-primary/5 py-16">
+    <div class="container mx-auto px-4">
+      <div class="max-w-md mx-auto">
+        <!-- Título -->
+        <div class="text-center mb-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-3">
+            Bienvenido de nuevo
+          </h1>
+          <p class="text-gray-600">
+            Inicia sesión para acceder a tu cuenta
+          </p>
+        </div>
+
+        <!-- Formulario de Login -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+          <LoginForm client:load />
+
+          <!-- Divider -->
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-200"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-4 bg-white text-gray-500">¿No tienes cuenta?</span>
+            </div>
+          </div>
+
+          <!-- Link a Registro -->
+          <a
+            href="/auth/register"
+            class="block w-full text-center py-3 px-4 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary hover:text-white transition-colors"
+          >
+            Crear una cuenta nueva
+          </a>
+        </div>
+
+        <!-- Link a Home -->
+        <div class="text-center mt-6">
+          <a href="/" class="text-gray-600 hover:text-primary transition-colors">
+            ← Volver al inicio
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

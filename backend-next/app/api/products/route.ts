@@ -5,6 +5,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const categorySlug = searchParams.get('category');
+    const productLineSlug = searchParams.get('productLine');
     const featured = searchParams.get('featured');
     const search = searchParams.get('search');
     const limit = searchParams.get('limit');
@@ -17,6 +18,17 @@ export async function GET(req: NextRequest) {
     if (categorySlug) {
       where.category = {
         slug: categorySlug,
+      };
+    }
+
+    // Filtro por línea de producto
+    if (productLineSlug) {
+      where.productLines = {
+        some: {
+          productLine: {
+            slug: productLineSlug,
+          },
+        },
       };
     }
 

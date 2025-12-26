@@ -1,0 +1,103 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import ProtectedRoute from '@/islands/ProtectedRoute';
+---
+
+<Layout title="Mis Favoritos - NutreTerra">
+  <Header />
+
+  <main class="min-h-screen bg-gradient-to-b from-white to-primary/5 py-16">
+    <ProtectedRoute client:load>
+      <div class="container mx-auto px-4">
+        <!-- Breadcrumb -->
+        <div class="mb-8">
+          <a href="/cuenta" class="text-primary hover:text-leaf transition-colors">
+            ← Volver a Mi Cuenta
+          </a>
+        </div>
+
+        <!-- Título -->
+        <div class="mb-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-3">Mis Favoritos</h1>
+          <p class="text-gray-600">Productos que has guardado para más tarde</p>
+        </div>
+
+        <!-- Estado vacío -->
+        <div class="max-w-2xl mx-auto">
+          <div class="bg-white rounded-2xl shadow-xl p-12 border border-gray-100 text-center">
+            <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">
+              No tienes productos favoritos todavía
+            </h2>
+            <p class="text-gray-600 mb-8">
+              Explora nuestra tienda y guarda los productos que te interesen para encontrarlos fácilmente más tarde
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="/productos"
+                class="px-8 py-4 bg-primary text-white font-bold text-lg rounded-xl hover:bg-leaf transition-colors shadow-lg hover:shadow-xl"
+              >
+                Explorar Productos
+              </a>
+              <a
+                href="/lineas"
+                class="px-8 py-4 border-2 border-primary text-primary font-bold text-lg rounded-xl hover:bg-primary hover:text-white transition-colors"
+              >
+                Ver Líneas de Producto
+              </a>
+            </div>
+          </div>
+
+          <!-- Información sobre favoritos -->
+          <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <div class="flex gap-3">
+              <svg class="w-6 h-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h3 class="font-semibold text-blue-900 mb-1">¿Cómo guardar favoritos?</h3>
+                <p class="text-sm text-blue-800">
+                  Cuando visites un producto que te guste, haz clic en el icono del corazón para agregarlo a tus favoritos. Podrás acceder a ellos en cualquier momento desde esta página.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ejemplo de productos favoritos (comentado para cuando se implemente) -->
+          <!--
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div class="relative">
+                <img src="/producto.jpg" alt="Producto" class="w-full h-48 object-cover">
+                <button class="absolute top-3 right-3 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
+                  <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold text-lg mb-2">Nombre del Producto</h3>
+                <p class="text-gray-600 text-sm mb-3">Descripción breve</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-2xl font-bold text-primary">12.99€</span>
+                  <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-leaf transition-colors">
+                    Añadir
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          -->
+        </div>
+      </div>
+    </ProtectedRoute>
+  </main>
+
+  <Footer />
+</Layout>

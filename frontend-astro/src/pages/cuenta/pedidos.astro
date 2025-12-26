@@ -3,6 +3,7 @@
 import Layout from '@/layouts/Layout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import ProtectedRoute from '@/islands/ProtectedRoute';
 
 // TODO: En producción, esto debería obtener los pedidos del usuario desde la API
 const orders = [
@@ -36,7 +37,8 @@ const statusLabels = {
 <Layout title="Mis Pedidos - NutreTerra" description="Historial de pedidos">
   <Header />
 
-  <main class="py-12 bg-cream/30">
+  <main class="min-h-screen bg-gradient-to-b from-white to-primary/5 py-16">
+    <ProtectedRoute client:load>
     <div class="container mx-auto px-4">
       <h1 class="text-4xl font-bold text-gray-900 mb-8">Mis Pedidos</h1>
 
@@ -145,6 +147,7 @@ const statusLabels = {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   </main>
 
   <Footer />

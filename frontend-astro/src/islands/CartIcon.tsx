@@ -1,9 +1,16 @@
 // Island interactivo: Icono de carrito con contador
 import { useStore } from '@nanostores/react';
+import { useState, useEffect } from 'react';
 import { cartItems } from '../stores/cartStore';
 
 export default function CartIcon() {
   const $cartItems = useStore(cartItems);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const cartCount = Object.values($cartItems).reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -28,8 +35,8 @@ export default function CartIcon() {
         />
       </svg>
 
-      {/* Contador */}
-      {cartCount > 0 && (
+      {/* Contador - solo se muestra después de montar en el cliente */}
+      {mounted && cartCount > 0 && (
         <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-white text-xs font-bold rounded-full flex items-center justify-center">
           {cartCount}
         </span>

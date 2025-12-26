@@ -1,6 +1,7 @@
 ---
 // Header con navegación principal
 import CartIcon from '@/islands/CartIcon';
+import UserMenu from '@/islands/UserMenu';
 
 const currentPath = Astro.url.pathname;
 ---
@@ -10,8 +11,7 @@ const currentPath = Astro.url.pathname;
     <div class="flex items-center justify-between">
       <!-- Logo -->
       <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-        <img src="/logo-icon.svg" alt="NutreTerra" class="h-14 w-auto" />
-        <span class="text-3xl font-bold text-primary">NutreTerra</span>
+        <img src="/logonutreterra.png" alt="NutreTerra" class="h-14 w-auto" />
       </a>
 
       <!-- Navegación Desktop -->
@@ -44,16 +44,8 @@ const currentPath = Astro.url.pathname;
 
       <!-- Iconos de usuario y carrito -->
       <div class="flex items-center gap-4">
-        <!-- Icono de usuario -->
-        <a
-          href="/cuenta"
-          class="text-gray-700 hover:text-primary transition-colors"
-          title="Mi Cuenta"
-        >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-          </svg>
-        </a>
+        <!-- Menú de usuario -->
+        <UserMenu client:load />
 
         <!-- Icono de carrito -->
         <CartIcon client:load />

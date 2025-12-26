@@ -1,0 +1,116 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import ProtectedRoute from '@/islands/ProtectedRoute';
+---
+
+<Layout title="Métodos de Pago - NutreTerra">
+  <Header />
+
+  <main class="min-h-screen bg-gradient-to-b from-white to-primary/5 py-16">
+    <ProtectedRoute client:load>
+      <div class="container mx-auto px-4">
+        <!-- Breadcrumb -->
+        <div class="mb-8">
+          <a href="/cuenta" class="text-primary hover:text-leaf transition-colors">
+            ← Volver a Mi Cuenta
+          </a>
+        </div>
+
+        <!-- Título -->
+        <div class="mb-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-3">Métodos de Pago</h1>
+          <p class="text-gray-600">Gestiona tus tarjetas y métodos de pago</p>
+        </div>
+
+        <div class="max-w-4xl">
+          <!-- Mensaje informativo -->
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+            <div class="flex gap-3">
+              <svg class="w-6 h-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h3 class="font-semibold text-blue-900 mb-1">Pagos seguros</h3>
+                <p class="text-sm text-blue-800">Tus datos de pago están protegidos con encriptación de nivel bancario. Nunca almacenamos información completa de tarjetas.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lista de métodos de pago -->
+          <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <!-- Estado vacío -->
+            <div class="text-center py-12">
+              <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-gray-900 mb-2">No tienes métodos de pago guardados</h3>
+              <p class="text-gray-600 mb-6">Añade una tarjeta para realizar tus compras más rápido</p>
+              <button
+                onclick="alert('Funcionalidad en desarrollo')"
+                class="px-8 py-4 bg-primary text-white font-bold text-lg rounded-xl hover:bg-leaf transition-colors shadow-lg hover:shadow-xl"
+              >
+                + Añadir Tarjeta
+              </button>
+            </div>
+
+            <!-- Ejemplo de tarjetas guardadas (comentado para cuando se implemente) -->
+            <!--
+            <div class="space-y-4">
+              <div class="border-2 border-primary rounded-xl p-6 relative bg-gradient-to-r from-primary/5 to-transparent">
+                <span class="absolute top-4 right-4 px-3 py-1 bg-primary text-white text-xs font-semibold rounded-full">
+                  Principal
+                </span>
+                <div class="flex items-start justify-between mb-4">
+                  <div>
+                    <p class="text-sm text-gray-600 mb-1">Tarjeta de crédito</p>
+                    <p class="text-lg font-bold text-gray-900">•••• •••• •••• 4242</p>
+                    <p class="text-sm text-gray-600 mt-1">Vence 12/25</p>
+                  </div>
+                  <div class="text-2xl font-bold text-gray-400">VISA</div>
+                </div>
+                <div class="flex gap-3 pt-4 border-t">
+                  <button class="px-4 py-2 text-primary hover:bg-primary/10 rounded-lg transition-colors font-medium">
+                    Editar
+                  </button>
+                  <button class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium">
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+            -->
+          </div>
+
+          <!-- Métodos de pago aceptados -->
+          <div class="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Métodos de pago aceptados</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="border border-gray-200 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900 mb-1">VISA</div>
+                <p class="text-xs text-gray-600">Tarjetas de crédito/débito</p>
+              </div>
+              <div class="border border-gray-200 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900 mb-1">Mastercard</div>
+                <p class="text-xs text-gray-600">Tarjetas de crédito/débito</p>
+              </div>
+              <div class="border border-gray-200 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900 mb-1">PayPal</div>
+                <p class="text-xs text-gray-600">Cuenta PayPal</p>
+              </div>
+              <div class="border border-gray-200 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900 mb-1">Bizum</div>
+                <p class="text-xs text-gray-600">Pago móvil</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ProtectedRoute>
+  </main>
+
+  <Footer />
+</Layout>

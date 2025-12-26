@@ -332,6 +332,19 @@ export default function MenuPlanner({ apiUrl }: { apiUrl: string }) {
     );
   };
 
+  const getDayMacros = (dayIndex: number) => {
+    const dayItems = menuItems.filter(item => item.day === dayIndex);
+    return dayItems.reduce(
+      (acc, item) => ({
+        calories: acc.calories + (item.product.calories || 0),
+        protein: acc.protein + (item.product.protein || 0),
+        carbs: acc.carbs + (item.product.carbohydrates || 0),
+        fat: acc.fat + (item.product.fat || 0),
+      }),
+      { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    );
+  };
+
   const sendToCart = () => {
     if (menuItems.length === 0) {
       alert('Añade productos al menú primero');
@@ -482,29 +495,56 @@ export default function MenuPlanner({ apiUrl }: { apiUrl: string }) {
 
             {/* Cuadrícula de Días */}
             <div className="space-y-4">
-              {DAYS.map((dayName, dayIndex) => (
-                <div key={dayIndex} className="bg-white rounded-xl shadow-lg overflow-hidden">
-                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-bold text-gray-900">{dayName}</h3>
+              {DAYS.map((dayName, dayIndex) => {
+                const dayMacros = getDayMacros(dayIndex);
+                const hasMacros = dayMacros.calories > 0 || dayMacros.protein > 0 || dayMacros.carbs > 0 || dayMacros.fat > 0;
+
+                return (
+                  <div key={dayIndex} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b border-gray-200">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <h3 className="text-lg font-bold text-gray-900">{dayName}</h3>
+                        {hasMacros && (
+                          <div className="flex items-center gap-3 text-xs">
+                            <div className="flex items-center gap-1">
+                              <span className="font-semibold text-primary">{Math.round(dayMacros.calories)}</span>
+                              <span className="text-gray-500">kcal</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="font-semibold text-blue-600">{Math.round(dayMacros.protein)}g</span>
+                              <span className="text-gray-500">P</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="font-semibold text-accent">{Math.round(dayMacros.carbs)}g</span>
+                              <span className="text-gray-500">C</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="font-semibold text-leaf">{Math.round(dayMacros.fat)}g</span>
+                              <span className="text-gray-500">G</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {MEALS.map((meal) => {
+                        const items = getItemsForSlot(dayIndex, meal.key);
+                        return (
+                          <DroppableMealSlot
+                            key={meal.key}
+                            dayIndex={dayIndex}
+                            mealKey={meal.key}
+                            label={meal.label}
+                            items={items}
+                            onRemove={removeFromMenu}
+                            onAddClick={() => openProductModal(dayIndex, meal.key)}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {MEALS.map((meal) => {
-                      const items = getItemsForSlot(dayIndex, meal.key);
-                      return (
-                        <DroppableMealSlot
-                          key={meal.key}
-                          dayIndex={dayIndex}
-                          mealKey={meal.key}
-                          label={meal.label}
-                          items={items}
-                          onRemove={removeFromMenu}
-                          onAddClick={() => openProductModal(dayIndex, meal.key)}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

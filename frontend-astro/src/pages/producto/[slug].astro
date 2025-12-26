@@ -92,8 +92,46 @@ const relatedProducts = allProducts
           {product.tags && product.tags.length > 0 && (
             <div class="flex flex-wrap gap-2 mb-6">
               {product.tags.map((tag) => (
-                <span class="badge badge-leaf">{tag}</span>
+                <span class="badge badge-leaf">{tag.name}</span>
               ))}
+            </div>
+          )}
+
+          <!-- Información Nutricional -->
+          {(product.calories || product.protein || product.carbohydrates || product.fat) && (
+            <div class="bg-gradient-to-br from-primary/5 to-leaf/5 rounded-xl p-4 mb-6 border border-primary/10">
+              <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                Información Nutricional
+              </h3>
+              <div class="grid grid-cols-2 gap-2">
+                {product.calories && (
+                  <div class="bg-white rounded-lg p-3 text-center">
+                    <p class="text-xl font-bold text-primary mb-0.5">{product.calories}</p>
+                    <p class="text-xs text-gray-600 font-medium">Calorías</p>
+                  </div>
+                )}
+                {product.protein && (
+                  <div class="bg-white rounded-lg p-3 text-center">
+                    <p class="text-xl font-bold text-blue-600 mb-0.5">{product.protein}g</p>
+                    <p class="text-xs text-gray-600 font-medium">Proteínas</p>
+                  </div>
+                )}
+                {product.carbohydrates && (
+                  <div class="bg-white rounded-lg p-3 text-center">
+                    <p class="text-xl font-bold text-accent mb-0.5">{product.carbohydrates}g</p>
+                    <p class="text-xs text-gray-600 font-medium">Carbohidratos</p>
+                  </div>
+                )}
+                {product.fat && (
+                  <div class="bg-white rounded-lg p-3 text-center">
+                    <p class="text-xl font-bold text-leaf mb-0.5">{product.fat}g</p>
+                    <p class="text-xs text-gray-600 font-medium">Grasas</p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -113,7 +151,7 @@ const relatedProducts = allProducts
           <!-- Acciones -->
           <div class="flex gap-4 mb-8">
             <button
-              class="btn-primary btn-lg flex-1"
+              class="w-full px-8 py-4 bg-primary text-white font-bold text-lg rounded-xl hover:bg-leaf transition-colors shadow-lg hover:shadow-xl disabled:bg-gray-300 disabled:cursor-not-allowed"
               onclick="alert('Funcionalidad de carrito en desarrollo')"
               disabled={product.stock === 0}
             >
@@ -147,13 +185,48 @@ const relatedProducts = allProducts
 
       <!-- Productos Relacionados -->
       {relatedProducts.length > 0 && (
-        <section>
+        <section class="mt-20">
           <h2 class="text-3xl font-bold text-gray-900 mb-8">
             Productos <span class="text-primary">Relacionados</span>
           </h2>
-          <div class="product-grid">
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
             {relatedProducts.map((relatedProduct) => (
-              <ProductCard product={relatedProduct} />
+              <a href={`/producto/${relatedProduct.slug}`} class="group block">
+                <div class="relative overflow-hidden rounded-2xl bg-gray-100 aspect-[4/5] mb-4">
+                  <img
+                    src={relatedProduct.imageUrl}
+                    alt={relatedProduct.name}
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {relatedProduct.compareAtPrice && (
+                    <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-bold px-3 py-1 rounded-full">
+                      Oferta
+                    </div>
+                  )}
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                </div>
+
+                <div class="space-y-1">
+                  <h3 class="font-medium text-gray-900 text-lg leading-tight group-hover:text-primary transition-colors">
+                    {relatedProduct.name}
+                  </h3>
+                  <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-500">
+                      {relatedProduct.calories ? `${relatedProduct.calories} kcal` : 'Saludable'}
+                    </p>
+                    <div class="flex items-baseline gap-2">
+                      <span class="text-lg font-semibold text-gray-900">
+                        {relatedProduct.price.toFixed(2)}€
+                      </span>
+                      {relatedProduct.compareAtPrice && (
+                        <span class="text-sm text-gray-400 line-through">
+                          {relatedProduct.compareAtPrice.toFixed(2)}€
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </a>
             ))}
           </div>
         </section>

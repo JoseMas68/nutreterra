@@ -1,0 +1,186 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import ProtectedRoute from '@/islands/ProtectedRoute';
+---
+
+<Layout title="Configuración - NutreTerra">
+  <Header />
+
+  <main class="min-h-screen bg-gradient-to-b from-white to-primary/5 py-16">
+    <ProtectedRoute client:load>
+      <div class="container mx-auto px-4">
+        <!-- Breadcrumb -->
+        <div class="mb-8">
+          <a href="/cuenta" class="text-primary hover:text-leaf transition-colors">
+            ← Volver a Mi Cuenta
+          </a>
+        </div>
+
+        <!-- Título -->
+        <div class="mb-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-3">Configuración</h1>
+          <p class="text-gray-600">Personaliza tu experiencia en NutreTerra</p>
+        </div>
+
+        <div class="max-w-3xl">
+          <!-- Notificaciones -->
+          <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Notificaciones</h2>
+
+            <div class="space-y-6">
+              <!-- Email Marketing -->
+              <div class="flex items-start justify-between pb-6 border-b border-gray-200">
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-900 mb-1">Newsletter y Ofertas</h3>
+                  <p class="text-sm text-gray-600">Recibe información sobre nuevos productos, promociones y ofertas exclusivas</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" checked>
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+
+              <!-- Pedidos -->
+              <div class="flex items-start justify-between pb-6 border-b border-gray-200">
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-900 mb-1">Actualizaciones de Pedidos</h3>
+                  <p class="text-sm text-gray-600">Notificaciones sobre el estado de tus pedidos y envíos</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" checked>
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+
+              <!-- Recordatorios -->
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-900 mb-1">Recordatorios de Carrito</h3>
+                  <p class="text-sm text-gray-600">Te recordaremos si dejaste productos en tu carrito</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preferencias de Compra -->
+          <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Preferencias de Compra</h2>
+
+            <div class="space-y-6">
+              <!-- Idioma -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Idioma
+                </label>
+                <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                  <option value="es" selected>Español</option>
+                  <option value="en">English</option>
+                  <option value="ca">Català</option>
+                </select>
+              </div>
+
+              <!-- Moneda -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Moneda
+                </label>
+                <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                  <option value="eur" selected>EUR (€)</option>
+                  <option value="usd">USD ($)</option>
+                  <option value="gbp">GBP (£)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Privacidad -->
+          <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Privacidad y Seguridad</h2>
+
+            <div class="space-y-4">
+              <div class="flex items-start justify-between pb-4 border-b border-gray-200">
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-900 mb-1">Perfil Público</h3>
+                  <p class="text-sm text-gray-600">Permite que otros usuarios vean tu perfil y reseñas</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+
+              <div class="pt-4">
+                <a href="#" class="text-primary hover:text-leaf font-medium transition-colors">
+                  Ver Política de Privacidad →
+                </a>
+              </div>
+
+              <div>
+                <a href="#" class="text-primary hover:text-leaf font-medium transition-colors">
+                  Descargar mis datos →
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zona de Peligro -->
+          <div class="bg-white rounded-2xl shadow-xl p-8 border-2 border-red-200">
+            <h2 class="text-2xl font-bold text-red-600 mb-6">Zona de Peligro</h2>
+
+            <div class="space-y-4">
+              <div class="flex items-start justify-between pb-4 border-b border-red-200">
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-900 mb-1">Cerrar Sesión en Todos los Dispositivos</h3>
+                  <p class="text-sm text-gray-600">Cierra tu sesión en todos los dispositivos donde hayas iniciado sesión</p>
+                </div>
+                <button
+                  onclick="alert('Funcionalidad en desarrollo')"
+                  class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium whitespace-nowrap"
+                >
+                  Cerrar Sesiones
+                </button>
+              </div>
+
+              <div class="flex items-start justify-between pt-4">
+                <div class="flex-1">
+                  <h3 class="font-semibold text-red-600 mb-1">Eliminar Cuenta</h3>
+                  <p class="text-sm text-gray-600">Elimina permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.</p>
+                </div>
+                <button
+                  onclick="alert('Funcionalidad en desarrollo')"
+                  class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
+                >
+                  Eliminar Cuenta
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Guardar -->
+          <div class="mt-8 flex gap-4">
+            <button
+              onclick="alert('Configuración guardada correctamente')"
+              class="flex-1 px-8 py-4 bg-primary text-white font-bold text-lg rounded-xl hover:bg-leaf transition-colors shadow-lg hover:shadow-xl"
+            >
+              Guardar Cambios
+            </button>
+            <a
+              href="/cuenta"
+              class="px-8 py-4 border-2 border-gray-300 text-gray-700 font-bold text-lg rounded-xl hover:bg-gray-50 transition-colors text-center"
+            >
+              Cancelar
+            </a>
+          </div>
+        </div>
+      </div>
+    </ProtectedRoute>
+  </main>
+
+  <Footer />
+</Layout>

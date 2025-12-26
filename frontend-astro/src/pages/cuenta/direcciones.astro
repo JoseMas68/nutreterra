@@ -3,6 +3,7 @@
 import Layout from '@/layouts/Layout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import ProtectedRoute from '@/islands/ProtectedRoute';
 
 // TODO: En producción, esto debería obtener las direcciones del usuario desde la API
 const addresses = [
@@ -22,7 +23,8 @@ const addresses = [
 <Layout title="Mis Direcciones - NutreTerra" description="Gestiona tus direcciones de envío">
   <Header />
 
-  <main class="py-12 bg-cream/30">
+  <main class="min-h-screen bg-gradient-to-b from-white to-primary/5 py-16">
+    <ProtectedRoute client:load>
     <div class="container mx-auto px-4">
       <h1 class="text-4xl font-bold text-gray-900 mb-8">Mis Direcciones</h1>
 
@@ -147,6 +149,7 @@ const addresses = [
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   </main>
 
   <Footer />

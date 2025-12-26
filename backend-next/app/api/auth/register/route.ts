@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
+import { generateToken } from '@/lib/jwt';
 
 const registerSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -43,8 +44,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Generar token JWT
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+    });
+
     return NextResponse.json(
-      { message: 'Usuario creado exitosamente', user },
+      { message: 'Usuario creado exitosamente', user, token },
       { status: 201 }
     );
   } catch (error) {

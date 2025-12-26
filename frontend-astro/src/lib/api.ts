@@ -59,6 +59,7 @@ export interface ProductLine {
 // Obtener todos los productos
 export async function getProducts(params?: {
   category?: string;
+  productLine?: string;
   featured?: boolean;
   search?: string;
   limit?: number;
@@ -66,6 +67,7 @@ export async function getProducts(params?: {
   const searchParams = new URLSearchParams();
 
   if (params?.category) searchParams.set('category', params.category);
+  if (params?.productLine) searchParams.set('productLine', params.productLine);
   if (params?.featured) searchParams.set('featured', 'true');
   if (params?.search) searchParams.set('search', params.search);
   if (params?.limit) searchParams.set('limit', params.limit.toString());

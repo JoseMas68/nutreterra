@@ -115,7 +115,6 @@ const productLines = (await getProductLines()).filter(line => line.active);
           <!-- Formas Geométricas de Fondo (Círculos Orgánicos) -->
           <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-primary/15 transition-colors duration-500"></div>
           <div class="absolute bottom-0 left-0 w-48 h-48 bg-green-100/50 rounded-full -ml-12 -mb-12 blur-xl group-hover:bg-green-100 transition-colors duration-500"></div>
-          <div class="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-[0.03]"></div>
           
           <div class="relative z-10">
             <div class="mb-8">
@@ -302,73 +301,126 @@ const productLines = (await getProductLines()).filter(line => line.active);
     </div>
   </section>
 
-  <!-- Por qué elegirnos -->
-  <section class="py-24 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 tracking-tight">
+  <!-- Por qué elegirnos - Versión Visual Mejorada -->
+  <section class="py-24 bg-gradient-to-b from-white via-primary/5 to-white overflow-hidden relative">
+    <!-- Elementos decorativos de fondo -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-leaf/10 rounded-full blur-3xl"></div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center mb-20">
+        <span class="text-primary font-bold tracking-wider uppercase text-sm mb-3 block">Beneficios</span>
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight">
           ¿Por qué <span class="text-primary">NutreTerra</span>?
         </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Más que comida saludable, una experiencia completa
+        </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- Feature 1 -->
-        <div class="text-center p-6">
-          <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-16">
+        <!-- Feature 1 - Destacado con imagen conceptual -->
+        <div class="group relative bg-gradient-to-br from-primary/10 to-primary/5 rounded-[2rem] p-10 hover:shadow-2xl transition-all duration-500 overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-700"></div>
+
+          <div class="relative z-10">
+            <div class="w-20 h-20 bg-primary text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-xl shadow-primary/30">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-4">100% Natural y Saludable</h3>
+            <p class="text-gray-700 leading-relaxed text-lg mb-6">
+              Ingredientes frescos, sin conservantes ni procesados. Cada plato con certificación nutricional.
+            </p>
+            <div class="flex items-center gap-2 text-primary font-semibold">
+              <span class="text-3xl font-bold">✓</span>
+              <span>Sin aditivos artificiales</span>
+            </div>
           </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-3">100% Saludable</h3>
-          <p class="text-gray-500 leading-relaxed text-sm">Ingredientes naturales, sin conservantes ni procesados. Certificación nutricional en cada plato.</p>
         </div>
 
         <!-- Feature 2 -->
-        <div class="text-center p-6">
-          <div class="w-16 h-16 bg-leaf/10 rounded-full flex items-center justify-center mx-auto mb-6 text-leaf">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+        <div class="group relative bg-gradient-to-br from-leaf/10 to-leaf/5 rounded-[2rem] p-10 hover:shadow-2xl transition-all duration-500 overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-leaf/20 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-700"></div>
+
+          <div class="relative z-10">
+            <div class="w-20 h-20 bg-leaf text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500 shadow-xl shadow-leaf/30">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-4">Ahorra Tiempo Valioso</h3>
+            <p class="text-gray-700 leading-relaxed text-lg mb-6">
+              Olvídate de cocinar y planificar. Platos listos en minutos para disfrutar tu vida.
+            </p>
+            <div class="flex items-center gap-2 text-leaf font-semibold">
+              <span class="text-3xl font-bold">⚡</span>
+              <span>Listo en 3 minutos</span>
+            </div>
           </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-3">Ahorra Tiempo</h3>
-          <p class="text-gray-500 leading-relaxed text-sm">Olvídate de cocinar y planificar. Platos listos en minutos para que disfrutes tu tiempo libre.</p>
         </div>
 
         <!-- Feature 3 -->
-        <div class="text-center p-6">
-          <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6 text-accent">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-            </svg>
+        <div class="group relative bg-gradient-to-br from-accent/10 to-accent/5 rounded-[2rem] p-10 hover:shadow-2xl transition-all duration-500 overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-700"></div>
+
+          <div class="relative z-10">
+            <div class="w-20 h-20 bg-accent text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-xl shadow-accent/30">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-4">Control Total de Macros</h3>
+            <p class="text-gray-700 leading-relaxed text-lg mb-6">
+              Información nutricional detallada. Alcanza tus objetivos fitness con precisión.
+            </p>
+            <div class="flex items-center gap-2 text-accent font-semibold">
+              <span class="text-3xl font-bold">📊</span>
+              <span>Macros calculados al detalle</span>
+            </div>
           </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-3">Control de Macros</h3>
-          <p class="text-gray-500 leading-relaxed text-sm">Información nutricional detallada. Alcanza tus objetivos con precisión y sin complicaciones.</p>
         </div>
 
         <!-- Feature 4 -->
-        <div class="text-center p-6">
-          <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-            </svg>
+        <div class="group relative bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-[2rem] p-10 hover:shadow-2xl transition-all duration-500 overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-blue-200/40 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-700"></div>
+
+          <div class="relative z-10">
+            <div class="w-20 h-20 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500 shadow-xl shadow-blue-600/30">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-4">Envío Express</h3>
+            <p class="text-gray-700 leading-relaxed text-lg mb-6">
+              Entrega rápida en 24-48h. Envío gratis desde 50€. Tus comidas siempre frescas.
+            </p>
+            <div class="flex items-center gap-2 text-blue-600 font-semibold">
+              <span class="text-3xl font-bold">🚚</span>
+              <span>Entrega garantizada</span>
+            </div>
           </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-3">Envío Express</h3>
-          <p class="text-gray-500 leading-relaxed text-sm">Entrega en 24-48h. Envío gratis desde 50€. Tus comidas frescas cuando las necesites.</p>
         </div>
       </div>
 
-      <!-- CTA adicional -->
-      <div class="mt-16 text-center">
-        <div class="inline-block bg-white rounded-2xl shadow-xl p-8 max-w-2xl">
-          <p class="text-2xl font-bold text-gray-900 mb-4">
-            ¿Listo para empezar tu transformación saludable?
-          </p>
-          <p class="text-gray-600 mb-6">
-            Únete a miles de personas que ya han mejorado su alimentación con NutreTerra
-          </p>
-          <a href="/planificador" class="inline-block px-10 py-4 bg-gradient-to-r from-primary to-leaf text-white font-bold rounded-xl hover:shadow-2xl transition-all transform hover:scale-105">
-            Crear Mi Primer Menú Gratis
-          </a>
+      <!-- CTA mejorado -->
+      <div class="mt-20 text-center">
+        <div class="relative inline-block bg-gradient-to-br from-white to-primary/5 rounded-3xl shadow-2xl p-12 max-w-3xl border-2 border-primary/10">
+          <div class="absolute -top-6 -right-6 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
+          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-leaf/20 rounded-full blur-2xl"></div>
+
+          <div class="relative z-10">
+            <p class="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">
+              ¿Listo para tu <span class="text-primary">transformación</span> saludable?
+            </p>
+            <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+              Únete a miles de personas que ya disfrutan de una alimentación equilibrada con NutreTerra
+            </p>
+            <a href="/planificador" class="inline-block px-12 py-5 bg-gradient-to-r from-primary to-leaf text-white font-black text-lg rounded-2xl hover:shadow-2xl hover:shadow-primary/40 transition-all transform hover:scale-105 hover:-translate-y-1">
+              Crear Mi Primer Menú Gratis →
+            </a>
+          </div>
         </div>
       </div>
     </div>
