@@ -66,50 +66,162 @@ const currentPath = Astro.url.pathname;
       </div>
     </div>
 
-    <!-- Backdrop Oscuro -->
-    <div 
-      id="mobile-backdrop" 
-      class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
+    <!-- Backdrop Oscuro con blur -->
+    <div
+      id="mobile-backdrop"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-all duration-500 md:hidden"
     ></div>
 
-    <!-- Menú Lateral (Drawer) -->
-    <div 
-      id="mobile-drawer" 
-      class="fixed inset-y-0 right-0 z-40 w-[280px] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col"
+    <!-- Menú Lateral Moderno (Drawer) -->
+    <div
+      id="mobile-drawer"
+      class="fixed inset-y-0 right-0 z-50 w-[320px] bg-gradient-to-b from-white to-gray-50 shadow-2xl transform translate-x-full transition-all duration-500 ease-out md:hidden flex flex-col"
     >
-      <div class="p-6 pt-24 flex-1 flex flex-col gap-6">
-        <nav class="flex flex-col gap-4">
+      <!-- Header del menú con gradiente -->
+      <div class="bg-gradient-to-r from-primary to-leaf p-6 pt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-white font-bold text-xl">Menú</h2>
+          <button
+            id="close-drawer-btn"
+            class="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+            aria-label="Cerrar menú"
+          >
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <p class="text-white/90 text-sm">Nutrición real. Esfuerzo cero.</p>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-6">
+        <!-- Navegación principal -->
+        <nav class="space-y-2 mb-6">
           <a
             href="/"
-            class={`text-lg font-medium transition-colors ${currentPath === '/' ? 'text-primary' : 'text-gray-900'}`}
+            class={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              currentPath === '/'
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
           >
-            Inicio
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span>Inicio</span>
           </a>
+
           <a
             href="/productos"
-            class={`text-lg font-medium transition-colors ${currentPath.startsWith('/producto') ? 'text-primary' : 'text-gray-900'}`}
+            class={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              currentPath.startsWith('/producto')
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
           >
-            Nuestros Productos
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+            <span>Nuestros Productos</span>
           </a>
-          <a
-            href="/contacto"
-            class={`text-lg font-medium transition-colors ${currentPath === '/contacto' ? 'text-primary' : 'text-gray-900'}`}
-          >
-            Contacto
-          </a>
-        </nav>
 
-        <div class="mt-auto">
           <a
             href="/planificador"
-            class="flex items-center justify-center gap-2 w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-leaf transition-colors shadow-lg"
+            class={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              currentPath === '/planificador'
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
-            Planificador Semanal
+            <span>Planificador Semanal</span>
+          </a>
+        </nav>
+
+        <!-- Separador -->
+        <div class="border-t border-gray-200 my-6"></div>
+
+        <!-- Sección de usuario -->
+        <div class="space-y-2 mb-6">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-2">Mi Cuenta</p>
+
+          <a
+            href="/cuenta/perfil"
+            class={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              currentPath === '/cuenta/perfil'
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            <span>Mi Perfil</span>
+          </a>
+
+          <a
+            href="/cuenta/pedidos"
+            class={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              currentPath.startsWith('/cuenta/pedidos')
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            <span>Mis Pedidos</span>
+          </a>
+
+          <a
+            href="/cuenta/favoritos"
+            class={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              currentPath === '/cuenta/favoritos'
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+            <span>Favoritos</span>
           </a>
         </div>
+
+        <!-- Separador -->
+        <div class="border-t border-gray-200 my-6"></div>
+
+        <!-- Enlaces adicionales -->
+        <div class="space-y-2">
+          <a
+            href="/contacto"
+            class={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              currentPath === '/contacto'
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            <span>Contacto</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Footer del menú con CTA -->
+      <div class="p-6 border-t border-gray-200 bg-white">
+        <a
+          href="/planificador"
+          class="flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-primary to-leaf text-white font-bold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          Crear Planificación
+        </a>
       </div>
     </div>
   </div>
@@ -117,35 +229,88 @@ const currentPath = Astro.url.pathname;
 
 <script>
   const btn = document.getElementById('mobile-menu-btn');
+  const closeDrawerBtn = document.getElementById('close-drawer-btn');
   const drawer = document.getElementById('mobile-drawer');
   const backdrop = document.getElementById('mobile-backdrop');
   const menuIcon = document.getElementById('menu-icon');
   const closeIcon = document.getElementById('close-icon');
   let isOpen = false;
 
-  function toggleMenu() {
-    isOpen = !isOpen;
-    
-    if (isOpen) {
+  function openMenu() {
+    isOpen = true;
+
+    // Mostrar backdrop primero
+    backdrop?.classList.remove('pointer-events-none');
+    setTimeout(() => {
+      backdrop?.classList.remove('opacity-0');
+    }, 10);
+
+    // Abrir drawer con animación suave
+    setTimeout(() => {
       drawer?.classList.remove('translate-x-full');
-      backdrop?.classList.remove('opacity-0', 'pointer-events-none');
-      menuIcon?.classList.add('hidden');
-      closeIcon?.classList.remove('hidden');
-      document.body.style.overflow = 'hidden'; // Prevenir scroll
+    }, 10);
+
+    // Cambiar iconos
+    menuIcon?.classList.add('hidden');
+    closeIcon?.classList.remove('hidden');
+
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    isOpen = false;
+
+    // Cerrar drawer
+    drawer?.classList.add('translate-x-full');
+
+    // Ocultar backdrop
+    backdrop?.classList.add('opacity-0');
+    setTimeout(() => {
+      backdrop?.classList.add('pointer-events-none');
+    }, 500);
+
+    // Cambiar iconos
+    menuIcon?.classList.remove('hidden');
+    closeIcon?.classList.add('hidden');
+
+    // Restaurar scroll
+    document.body.style.overflow = '';
+  }
+
+  function toggleMenu() {
+    if (isOpen) {
+      closeMenu();
     } else {
-      drawer?.classList.add('translate-x-full');
-      backdrop?.classList.add('opacity-0', 'pointer-events-none');
-      menuIcon?.classList.remove('hidden');
-      closeIcon?.classList.add('hidden');
-      document.body.style.overflow = ''; // Restaurar scroll
+      openMenu();
     }
   }
 
+  // Event listeners
   if (btn) {
     btn.addEventListener('click', toggleMenu);
   }
 
-  if (backdrop) {
-    backdrop.addEventListener('click', toggleMenu);
+  if (closeDrawerBtn) {
+    closeDrawerBtn.addEventListener('click', closeMenu);
   }
+
+  if (backdrop) {
+    backdrop.addEventListener('click', closeMenu);
+  }
+
+  // Cerrar al hacer clic en un enlace
+  const drawerLinks = drawer?.querySelectorAll('a');
+  drawerLinks?.forEach(link => {
+    link.addEventListener('click', () => {
+      setTimeout(closeMenu, 200);
+    });
+  });
+
+  // Cerrar con tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) {
+      closeMenu();
+    }
+  });
 </script>
