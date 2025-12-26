@@ -89,7 +89,7 @@ async function main() {
       name: 'Snacks',
       slug: 'snacks',
       description: 'Snacks saludables para mantener tu energía entre comidas.',
-      imageUrl: 'https://images.unsplash.com/photo-1607623488235-e2e9ad42b31f?w=800',
+      imageUrl: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=800',
       order: 4,
     },
   });
