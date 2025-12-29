@@ -142,7 +142,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
 
           {/* Nombre del producto */}
-          <h3 className="text-sm md:text-xl font-bold text-gray-900 mb-1 md:mb-2 hover:text-primary transition-colors leading-tight line-clamp-2 md:min-h-[3.5rem]">
+          <h3 className="text-left text-sm md:text-xl font-bold text-gray-900 mb-1 md:mb-2 hover:text-primary transition-colors leading-tight line-clamp-2 md:min-h-[3.5rem]">
             {product.name}
           </h3>
 
