@@ -482,7 +482,7 @@ import { ProductCard } from '../../../components/ProductCard';
 ```typescript
 // ✅ Named export
 export function calculateTotal() { }
-export const API_URL = 'https://api.nutreterra.com';
+export const API_URL = 'https://api.nutreterra.es';
 
 // Importar
 import { calculateTotal, API_URL } from './utils';

@@ -202,7 +202,7 @@ Este documento describe el recorrido completo del usuario desde que descubre un 
    const { error, paymentIntent } = await stripe.confirmPayment({
      elements,
      confirmParams: {
-       return_url: 'https://nutreterra.com/checkout/confirmacion'
+       return_url: 'https://nutreterra.es/checkout/confirmacion'
      }
    });
    ```

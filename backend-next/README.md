@@ -528,7 +528,7 @@ async function main() {
   const adminPassword = await hashPassword('admin123');
   await prisma.user.create({
     data: {
-      email: 'admin@nutreterra.com',
+      email: 'admin@nutreterra.es',
       passwordHash: adminPassword,
       name: 'Admin',
       role: 'ADMIN',
@@ -605,7 +605,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 # Email (Resend)
 RESEND_API_KEY=re_...
-EMAIL_FROM=noreply@nutreterra.com
+EMAIL_FROM=noreply@nutreterra.es
 
 # Frontend URL (para CORS)
 FRONTEND_URL=http://localhost:4321
@@ -692,7 +692,7 @@ Esto creará:
 - 10 productos de ejemplo
 - 5 categorías
 - Tags (Vegano, Sin Gluten, Ecológico, etc.)
-- Usuario admin: `admin@nutreterra.com` / `admin123`
+- Usuario admin: `admin@nutreterra.es` / `admin123`
 - Usuario test: `test@example.com` / `test123`
 
 ## Endpoints Disponibles

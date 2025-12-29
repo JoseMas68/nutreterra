@@ -609,7 +609,6 @@ export default function MenuPlanner({ apiUrl }: { apiUrl: string }) {
                 onChange={(e) => setModalSearchQuery(e.target.value)}
                 placeholder="Buscar productos..."
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                autoFocus
               />
               <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                 <button

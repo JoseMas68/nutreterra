@@ -98,7 +98,7 @@ re_placeholder
 
 ```
 EMAIL_FROM
-noreply@nutreterra.com
+noreply@nutreterra.es
 ```
 
 #### Node Environment

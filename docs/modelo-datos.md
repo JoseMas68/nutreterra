@@ -568,7 +568,7 @@ async function main() {
   const adminPassword = await hash('admin123', 10);
   await prisma.user.create({
     data: {
-      email: 'admin@nutreterra.com',
+      email: 'admin@nutreterra.es',
       passwordHash: adminPassword,
       name: 'Admin',
       role: 'ADMIN'

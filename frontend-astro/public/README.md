@@ -239,7 +239,7 @@ Crear `public/robots.txt`:
 User-agent: *
 Allow: /
 
-Sitemap: https://nutreterra.com/sitemap.xml
+Sitemap: https://nutreterra.es/sitemap.xml
 ```
 
 ---

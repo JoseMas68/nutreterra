@@ -7,6 +7,7 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro';
 import ProductCard from '@/components/ProductCard.astro';
 import ProductGallery from '@/islands/ProductGallery';
 import FavoriteButton from '@/islands/FavoriteButton';
+import AddToCartButton from '@/islands/AddToCartButton';
 
 import { getProducts } from '@/lib/api';
 
@@ -151,13 +152,21 @@ const relatedProducts = allProducts
 
           <!-- Acciones -->
           <div class="flex gap-4 mb-8">
-            <button
-              class="flex-1 px-8 py-4 bg-primary text-white font-bold text-lg rounded-xl hover:bg-leaf transition-colors shadow-lg hover:shadow-xl disabled:bg-gray-300 disabled:cursor-not-allowed"
-              onclick="alert('Funcionalidad de carrito en desarrollo')"
-              disabled={product.stock === 0}
-            >
-              {product.stock === 0 ? 'Agotado' : 'Añadir al Carrito'}
-            </button>
+            <AddToCartButton
+              client:load
+              product={{
+                id: product.id,
+                name: product.name,
+                slug: product.slug,
+                imageUrl: product.imageUrl,
+                price: product.price,
+                calories: product.calories,
+                protein: product.protein,
+                carbohydrates: product.carbohydrates,
+                fat: product.fat,
+              }}
+              stock={product.stock}
+            />
             <FavoriteButton
               client:load
               product={{

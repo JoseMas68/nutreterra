@@ -22,22 +22,22 @@ const allCategories = await getCategories();
 
   <main class="min-h-screen bg-gray-50">
     <!-- Hero de Categoría -->
-    <section class="bg-gradient-to-br from-primary to-leaf py-16 text-white">
+    <section class="bg-white border-b border-gray-100 py-12 md:py-16">
       <div class="container mx-auto px-4">
         <div class="max-w-4xl">
-          <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+            <a href="/" class="hover:text-primary transition-colors">Inicio</a>
+            <span>/</span>
+            <a href="/productos" class="hover:text-primary transition-colors">Productos</a>
+            <span>/</span>
+            <span class="font-semibold text-gray-900">{category.name}</span>
+          </div>
+          <h1 class="text-4xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight">
             {category.name}
           </h1>
-          <p class="text-xl opacity-90">
+          <p class="text-lg md:text-xl text-gray-600 leading-relaxed">
             {category.description}
           </p>
-          <div class="mt-6 flex items-center gap-2 text-sm">
-            <a href="/" class="hover:underline">Inicio</a>
-            <span>/</span>
-            <a href="/productos" class="hover:underline">Productos</a>
-            <span>/</span>
-            <span class="font-semibold">{category.name}</span>
-          </div>
         </div>
       </div>
     </section>

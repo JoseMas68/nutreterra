@@ -225,13 +225,13 @@ export const FREE_SHIPPING_THRESHOLD = 50;
 - Database: PostgreSQL local
 
 ### Staging
-- Frontend: `staging.nutreterra.com`
-- Backend: `api-staging.nutreterra.com`
+- Frontend: `staging.nutreterra.es`
+- Backend: `api-staging.nutreterra.es`
 - Database: PostgreSQL en nube (pruebas)
 
 ### Production
-- Frontend: `nutreterra.com`
-- Backend: `api.nutreterra.com`
+- Frontend: `nutreterra.es`
+- Backend: `api.nutreterra.es`
 - Database: PostgreSQL en nube (producción)
 
 ## Decisiones Técnicas

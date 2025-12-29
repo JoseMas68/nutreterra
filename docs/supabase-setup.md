@@ -67,7 +67,7 @@ STRIPE_WEBHOOK_SECRET=whsec_placeholder
 
 # Email (Resend)
 RESEND_API_KEY=re_placeholder
-EMAIL_FROM=noreply@nutreterra.com
+EMAIL_FROM=noreply@nutreterra.es
 
 # Frontend URL
 FRONTEND_URL=http://localhost:4321
@@ -127,7 +127,7 @@ Esto creará:
 - **5 categorías** (Cereales, Legumbres, Frutos Secos, etc.)
 - **6 tags** (Vegano, Sin Gluten, Ecológico, etc.)
 - **2 usuarios** de prueba:
-  - Admin: `admin@nutreterra.com` / `admin123`
+  - Admin: `admin@nutreterra.es` / `admin123`
   - Cliente: `test@example.com` / `test123`
 - **1 carrito** de prueba con productos
 

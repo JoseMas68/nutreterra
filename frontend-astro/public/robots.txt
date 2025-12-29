@@ -14,6 +14,6 @@ Disallow: /_astro/
 # Crawl-delay: 10
 
 # Sitemap
-Sitemap: https://nutreterra.com/sitemap.xml
+Sitemap: https://nutreterra.es/sitemap.xml
 
 # NOTA: Actualizar URL del sitemap cuando esté en producción
