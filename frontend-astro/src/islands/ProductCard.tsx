@@ -181,7 +181,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={product.stock <= 0 || isAddingToCart}
-            className={`px-2 md:px-9 py-1.5 md:py-2.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-1 md:gap-2 text-xs md:text-base ${
+            className={`px-6 md:px-9 py-1.5 md:py-2.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-1 md:gap-2 text-xs md:text-base ${
               product.stock <= 0
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : showAddedMessage
