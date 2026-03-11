@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { requireAuth, requireAdmin } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -17,20 +16,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
+    const authUser = requireAuth(request);
 
     const { id } = await params;
     const userId = id;
 
     // Verificar que el usuario tiene permiso (admin o dueño del recurso)
-    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
+    if (authUser.id !== userId && authUser.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'No tienes permiso para acceder a este recurso' },
         { status: 403 }
@@ -74,20 +66,13 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
-    }
+    const authUser = requireAuth(request);
 
     const { id } = await params;
     const userId = id;
 
     // Verificar que el usuario tiene permiso (admin o dueño del recurso)
-    if (session.user.id !== userId && session.user.role !== 'ADMIN') {
+    if (authUser.id !== userId && authUser.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'No tienes permiso para acceder a este recurso' },
         { status: 403 }
@@ -100,7 +85,7 @@ export async function PUT(
     // Usuarios normales solo pueden actualizar su nombre, email y contraseña
     let updateData: any = {};
 
-    if (session.user.role === 'ADMIN') {
+    if (authUser.role === 'ADMIN') {
       // Admin puede actualizar todo mediante updateUserSchema
       const validation = updateUserSchema.safeParse(body);
       if (validation.success) {
@@ -147,7 +132,7 @@ export async function PUT(
     }
 
     // Si se quiere cambiar la contraseña (solo para usuarios normales actualizando su propia cuenta)
-    if (body.newPassword && session.user.id === userId) {
+    if (body.newPassword && authUser.id === userId) {
       // Verificar que se proporcionó la contraseña actual
       if (!body.currentPassword) {
         return NextResponse.json(
@@ -217,14 +202,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para realizar esta acción' },
-        { status: 403 }
-      );
-    }
+    const user = requireAdmin(request);
 
     const { id } = await params;
     const userId = id;

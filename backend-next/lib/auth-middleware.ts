@@ -1,15 +1,15 @@
 import { NextRequest } from 'next/server';
-import { verifyToken, type JWTPayload } from './jwt';
+import { verifyToken, type UserPayload } from './jwt';
 
 export interface AuthenticatedRequest extends NextRequest {
-  user?: JWTPayload;
+  user?: UserPayload;
 }
 
 /**
  * Middleware para verificar autenticación JWT
  * Extrae el token del header Authorization o de las cookies
  */
-export function getAuthUser(request: NextRequest): JWTPayload | null {
+export function getAuthUser(request: NextRequest): UserPayload | null {
   // Intentar obtener token del header Authorization
   const authHeader = request.headers.get('authorization');
   let token: string | null = null;
@@ -34,7 +34,7 @@ export function getAuthUser(request: NextRequest): JWTPayload | null {
 /**
  * Verificar si el usuario está autenticado
  */
-export function requireAuth(request: NextRequest): JWTPayload {
+export function requireAuth(request: NextRequest): UserPayload {
   const user = getAuthUser(request);
 
   if (!user) {
@@ -47,7 +47,7 @@ export function requireAuth(request: NextRequest): JWTPayload {
 /**
  * Verificar si el usuario es administrador
  */
-export function requireAdmin(request: NextRequest): JWTPayload {
+export function requireAdmin(request: NextRequest): UserPayload {
   const user = requireAuth(request);
 
   if (user.role !== 'ADMIN') {
@@ -64,10 +64,10 @@ export function requireAdmin(request: NextRequest): JWTPayload {
 export function requireOwnerOrAdmin(
   request: NextRequest,
   resourceUserId: string
-): JWTPayload {
+): UserPayload {
   const user = requireAuth(request);
 
-  if (user.userId !== resourceUserId && user.role !== 'ADMIN') {
+  if (user.id !== resourceUserId && user.role !== 'ADMIN') {
     throw new Error('No tienes permiso para acceder a este recurso');
   }
 

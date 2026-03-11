@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
 import { uploadProductImage, deleteProductImage } from '@/lib/supabase';
 
@@ -10,10 +9,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
+    const user = requireAdmin(req);
 
     const { id } = await params;
     const formData = await req.formData();
@@ -140,10 +136,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
+    const user = requireAdmin(req);
 
     const { id } = await params;
 

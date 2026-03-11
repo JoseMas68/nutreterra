@@ -35,6 +35,7 @@ export async function login(email: string, password: string): Promise<{ success:
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({ email, password }),
     });
 
@@ -44,9 +45,12 @@ export async function login(email: string, password: string): Promise<{ success:
       return { success: false, error: data.error || 'Error al iniciar sesión' };
     }
 
-    // Guardar token y usuario
+    // Guardar token y usuario en localStorage
     authToken.set(data.token);
     currentUser.set(data.user);
+
+    // También guardar en cookie para que el backend pueda leerlo
+    document.cookie = `authToken=${data.token}; path=/; max-age=604800; sameSite=lax`;
 
     return { success: true };
   } catch (error) {
@@ -64,6 +68,7 @@ export async function register(name: string, email: string, password: string): P
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({ name, email, password }),
     });
 
@@ -73,9 +78,12 @@ export async function register(name: string, email: string, password: string): P
       return { success: false, error: data.error || 'Error al registrarse' };
     }
 
-    // Guardar token y usuario
+    // Guardar token y usuario en localStorage
     authToken.set(data.token);
     currentUser.set(data.user);
+
+    // También guardar en cookie para que el backend pueda leerlo
+    document.cookie = `authToken=${data.token}; path=/; max-age=604800; sameSite=lax`;
 
     return { success: true };
   } catch (error) {
@@ -89,4 +97,7 @@ export function logout() {
   authToken.set(null);
   currentUser.set(null);
   isAuthenticated.set(false);
+
+  // También eliminar la cookie
+  document.cookie = 'authToken=; path=/; max-age=0';
 }

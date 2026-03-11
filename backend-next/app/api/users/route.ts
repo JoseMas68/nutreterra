@@ -1,20 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
 
 // GET - Listar usuarios (solo admin)
 export async function GET(request: NextRequest) {
   try {
     // Solo admin puede listar todos los usuarios
-    const session = await getServerSession(authOptions);
-
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para realizar esta acción' },
-        { status: 403 }
-      );
-    }
+    const user = requireAdmin(request);
 
     // Obtener parámetros de búsqueda
     const { searchParams } = new URL(request.url);

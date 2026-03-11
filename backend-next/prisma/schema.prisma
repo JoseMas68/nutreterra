@@ -349,3 +349,21 @@ enum MealType {
   DINNER    // Cena
   SNACK     // Snack
 }
+
+// ========================================
+// PLANTILLAS DE EMAIL
+// ========================================
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  slug      String   @unique // 'order-confirmation', 'shipping', 'welcome'
+  name      String
+  subject   String
+  body      String   // Contenido HTML/Handlebars
+  design    Json?    // Configuración del builder (colores, logo, etc.)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_templates")
+}

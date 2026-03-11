@@ -78,8 +78,6 @@ export default function UserMenu() {
               <>
                 <a
                   href={`${import.meta.env.PUBLIC_API_URL || 'http://localhost:3001'}/admin`}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="block px-4 py-2 text-purple-700 hover:bg-purple-50 transition-colors font-semibold"
                 >
                   <span className="flex items-center gap-2">

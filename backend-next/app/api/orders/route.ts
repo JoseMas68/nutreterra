@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
+import { EmailService } from '@/lib/email';
 
 // GET - Obtener pedidos del usuario
 export async function GET(request: NextRequest) {
@@ -159,6 +160,23 @@ export async function POST(request: NextRequest) {
         address: true,
       },
     });
+
+    // Enviar email de confirmación (sin bloquear la respuesta)
+    const userEmail = user.email || (await prisma.user.findUnique({ where: { id: user.userId } }))?.email;
+
+    if (userEmail) {
+      EmailService.send({
+        to: userEmail,
+        templateSlug: 'order-confirmation',
+        variables: {
+          customerName: user.name || 'Cliente',
+          orderNumber: order.orderNumber,
+          totalPrice: order.total.toFixed(2),
+          address: `${order.address.street}, ${order.address.city}`,
+          orderUrl: `${process.env.FRONTEND_URL || 'http://localhost:4321'}/cuenta/pedidos/${order.id}`,
+        },
+      }).catch(err => console.error('Error sending confirmation email:', err));
+    }
 
     return NextResponse.json(
       {

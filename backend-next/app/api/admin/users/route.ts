@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -15,15 +14,8 @@ const createUserSchema = z.object({
 // POST - Crear usuario (solo admin)
 export async function POST(request: NextRequest) {
   try {
-    // Verificar que el usuario es admin usando NextAuth
-    const session = await getServerSession(authOptions);
-
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'No tienes permiso para realizar esta acción' },
-        { status: 403 }
-      );
-    }
+    // Verificar que el usuario es admin usando JWT
+    const user = requireAdmin(request);
 
     const body = await request.json();
     const { email, password, name, role } = createUserSchema.parse(body);

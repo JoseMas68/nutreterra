@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
+import { EmailService } from '@/lib/email';
 
 // GET - Obtener detalles de un pedido específico
 export async function GET(
@@ -107,6 +108,26 @@ export async function PUT(
         address: true,
       },
     });
+
+    // Si el estado cambia a SHIPPED, enviar email
+    if (status === 'SHIPPED') {
+      const orderWithUser = await prisma.order.findUnique({
+        where: { id: order.id },
+        include: { user: true }
+      });
+
+      if (orderWithUser?.user.email) {
+        EmailService.send({
+          to: orderWithUser.user.email,
+          templateSlug: 'shipping-notification',
+          variables: {
+            customerName: orderWithUser.user.name || 'Cliente',
+            orderNumber: order.orderNumber,
+            trackingUrl: `${process.env.FRONTEND_URL || 'http://localhost:4321'}/cuenta/pedidos/${order.id}`,
+          },
+        }).catch(err => console.error('Error sending shipping email:', err));
+      }
+    }
 
     return NextResponse.json({
       message: 'Pedido actualizado exitosamente',

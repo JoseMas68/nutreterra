@@ -2,6 +2,7 @@
 // Layout principal de NutreTerra
 import '../styles/global.css';
 import TestSiteBanner from '../components/TestSiteBanner.astro';
+import Toaster from '../islands/Toaster';
 
 interface Props {
   title: string;
@@ -51,5 +52,21 @@ const canonicalURL = new URL(Astro.url.pathname, siteUrl);
   <body>
     <TestSiteBanner />
     <slot />
+    <Toaster />
+    <script is:inline>
+      // Manejar logout desde el backend
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('logout') === 'true') {
+        // Limpiar localStorage
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+
+        // Limpiar cookie
+        document.cookie = 'authToken=; path=/; max-age=0';
+
+        // Redirigir limpiando el parámetro
+        window.location.href = window.location.pathname;
+      }
+    </script>
   </body>
 </html>

@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { prisma } from '@/lib/prisma';
 
 // GET - Listar líneas de producto
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
+    const user = requireAdmin(request);
 
     const productLines = await prisma.productLine.findMany({
       orderBy: {
@@ -30,10 +26,7 @@ export async function GET() {
 // POST - Crear línea de producto
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
+    const user = requireAdmin(req);
 
     const body = await req.json();
     const { name, slug, description, icon, order, active } = body;
