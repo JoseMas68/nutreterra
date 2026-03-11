@@ -202,17 +202,17 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = requireAdmin(request);
+    const authUser = requireAdmin(request);
 
     const { id } = await params;
     const userId = id;
 
-    // Verificar que el usuario exists
-    const user = await prisma.user.findUnique({
+    // Verificar que el usuario existe
+    const userToDelete = await prisma.user.findUnique({
       where: { id: userId },
     });
 
-    if (!user) {
+    if (!userToDelete) {
       return NextResponse.json(
         { error: 'Usuario no encontrado' },
         { status: 404 }
