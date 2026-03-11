@@ -1,6 +1,7 @@
 ---
 // Layout principal de NutreTerra
 import '../styles/global.css';
+import TestSiteBanner from '../components/TestSiteBanner.astro';
 
 interface Props {
   title: string;
@@ -48,6 +49,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteUrl);
     <meta name="theme-color" content="#7FB14B" />
   </head>
   <body>
+    <TestSiteBanner />
     <slot />
   </body>
 </html>

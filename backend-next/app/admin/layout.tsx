@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import Link from 'next/link';
 
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:4321';
+
 export default async function AdminLayout({
   children,
 }: {
@@ -12,7 +14,8 @@ export default async function AdminLayout({
 
   // Verificar que el usuario esté autenticado y sea admin
   if (!session || session.user.role !== 'ADMIN') {
-    redirect('/api/auth/signin');
+    // Redirigir al frontend si no está autenticado
+    redirect('/unauthorized');
   }
 
   return (
@@ -32,11 +35,19 @@ export default async function AdminLayout({
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <Link
+                href={FRONTEND_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-[#7FB14B] hover:text-[#4A7D36] font-medium"
+              >
+                Ver sitio →
+              </Link>
               <span className="text-sm text-gray-700">
                 {session.user.email}
               </span>
               <Link
-                href="/api/auth/signout"
+                href="/auth/signout"
                 className="text-sm text-gray-600 hover:text-gray-900"
               >
                 Cerrar sesión
